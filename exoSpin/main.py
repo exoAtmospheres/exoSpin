@@ -55,10 +55,10 @@ if input()=='easy':
     print()
     print('... computing ...')
     #exoplanet_input.easy_obliquity()
-else:
+else :
     print()
     print('... computing ...')
-    #exoplanet_input.complex_obliquity()
+    #exoplanet_input.complex_obliquity
 
 print()
 print('Computing done ^^ !')

@@ -165,7 +165,13 @@ class Exoplanet():
             plt.legend()
  
     def get_rot_velocity(self,arg):
-        
+
+        # Period limitation due to centrifugal force and gravitationnal force
+        P_sample = (self.P > self.P_lim)
+
+        # Set vel and visini with P > P_limit condition and v < v_limit
+        self.vsini.value=self.vsini.value[P_sample]
+
         # Compute vsini pdf
         velocities = np.linspace(0,self.v_lim,1000)
         vsini_kde = self.get_pdf(self,'rotational_velocity')
@@ -244,7 +250,7 @@ class Exoplanet():
             omega_o=np.rad2deg(omega_o)
         self.omega_o = omega_o
 
-    def compute_spin_axis(self,method):
+    def compute_spin_axis(self):
         # Period limitation due to centrifugal force and gravitationnal force
         P_sample = (self.P > self.P_lim)
 
@@ -258,19 +264,95 @@ class Exoplanet():
         self.ip=np.rad2deg(np.arcsin(sin_ip[v_sample]))
         n_sample=2*np.sum(v_sample)
 
+    def get_spin_axis(self,arg,method):
 
-        ## Distribution ip - Plot
-        y, x, _ = plt.hist(ip_conc, bins=bins, density=True, color='#50C878',label='Distribution of $i_p$')
-        ip_max =  x[np.where(y == y.max())][0]
-        ip_err    =  np.std(ip_max)
-        plt.title('Companion spin-axis $i_p$ distribution and PDF (easy method) \n $i_p$ = '+ (str(round(ip_max,2)))+ '$\pm$'+ str(ip_err) + '°')
-        plt.xlabel('Degree (°)')
+        # Compute io pdf
+        if method =='easy':
+            angles = np.linspace(0,180,1000)
+            ip_kde = self.get_pdf(self.ip,'orbital_inclination')
+            ip_pdf = ip_kde(angles)
 
-        # PDF ip - Plot
-        plt.plot(angles,ip_easy_pdf,color='green',label='PDF of $i_p$')
-        plt.xlabel('Degree (°)')
-        plt.ylabel('PDF')
-        plt.legend()
+            if arg=='pdf':
+                plt.figure()
+                plt.plot(angles,ip_pdf,color='green',label='PDF of $i_p$')
+                plt.xlabel('Degree (°)')
+                plt.ylabel('PDF - Spin axis \n $i_p$ = '+ (str(round(angles[np.argmax(ip_pdf)],2))) + '°')
+                plt.legend()
+        
+            elif arg=='distribution':
+                plt.figure()
+                y, x, _ = plt.hist(self.ip, bins=bins, density=True, color='#50C878',label='Distribution of $i_p$')
+                ip_max =  x[np.where(y == y.max())][0]
+                ip_err    =  np.std(ip_max)
+                plt.title('Distribution - Spin axis \n $i_p$ = '+ (str(round(ip_max,2)))+ '$\pm$'+ str(ip_err) + '°')
+                plt.xlabel('Degree (°)')
+            else : 
+                plt.figure()
+                y, x, _ = plt.hist(self.io, bins=bins, density=True, color='#50C878',label='Distribution of $i_p$')
+                ip_max =  x[np.where(y == y.max())][0]
+                ip_err    =  np.std(ip_max)
+                plt.title('Spin axis  \n $i_p$ = '+ (str(round(ip_max,2)))+ '$\pm$'+ str(ip_err) + '°')
+                plt.xlabel('Degree (°)')
+                plt.plot(angles,ip_pdf,color='green',label='PDF of $i_p$')
+                plt.xlabel('Degree (°)')
+                plt.legend()
+
+        elif method == 'complex':
+            self.velocity=self.velocity.to(u.km/u.s)
+
+            ### Initialization of important parameters
+            Lv = gaussian_kde(self.velocity.value,bw_method='scott')
+            Lu = gaussian_kde(self.vsini.value,bw_method='scott')
+            v_range = np.linspace(0,self.v_limit.value,sizeof(self.velocity))         # Velocity interval [0;v_limit]
+            n_points = 100                                          # The more the point we take the more the integral value is accurate, however computing time is longer. 
+            angles_rad = np.linspace(0,np.pi,n_points)              # Angle interval [0;pi]
+            cos_ip_complex_pdf = np.zeros_like(angles_rad)
+
+            ### Integral calculation
+            for k, cos_k in enumerate (np.cos(angles_rad)):
+                int_dv = Lv(v_range)*Lu(v_range*np.sqrt(1-cos_k*cos_k))
+                cos_ip_complex_pdf[k] = np.trapz(int_dv,v_range)
+
+            ### Normalization of cos_ip PDF
+            cos_ip_complex_pdf /= np.trapz(cos_ip_complex_pdf,angles_rad)
+
+            ### PDF of ip
+            ip_complex_rad_pdf = cos_ip_complex_pdf*np.abs(np.sin(angles_rad)) 
+
+            ### Normalization of ip
+            angles_comp = angles_rad*180/np.pi                       # In order to make a degree angle interval [0 ; 180]°
+            ip_complex_pdf = ip_complex_rad_pdf/np.trapz(ip_complex_rad_pdf,angles_comp)
+
+            if arg=='pdf':
+                plt.figure()
+                plt.plot(angles_comp,ip_complex_pdf,color='green',label='PDF of $i_p$')
+                plt.xlabel('Degree (°)')
+                plt.ylabel('PDF - Spin axis \n $i_p$ = '+ (str(round(angles[np.argmax(ip_pdf)],2))) + '°')
+                plt.legend()
+        
+            elif arg=='distribution':
+                plt.figure()
+                y, x, _ = plt.hist(self.ip, bins=bins, density=True, color='#50C878',label='Distribution of $i_p$')
+                ip_max =  x[np.where(y == y.max())][0]
+                ip_err    =  np.std(ip_max)
+                plt.title('Distribution - Spin axis \n $i_p$ = '+ (str(round(ip_max,2)))+ '$\pm$'+ str(ip_err) + '°')
+                plt.xlabel('Degree (°)')
+            else : 
+                plt.figure()
+                y, x, _ = plt.hist(self.io, bins=bins, density=True, color='#50C878',label='Distribution of $i_p$')
+                ip_max =  x[np.where(y == y.max())][0]
+                ip_err    =  np.std(ip_max)
+                plt.title('Spin axis  \n $i_p$ = '+ (str(round(ip_max,2)))+ '$\pm$'+ str(ip_err) + '°')
+                plt.xlabel('Degree (°)')
+                plt.plot(angles_comp,ip_complex_pdf,color='green',label='PDF of $i_p$')
+                plt.xlabel('Degree (°)')
+                plt.legend()
+
+        else :
+            return "You must choose a method (easy/complex)"
+
+
+        
         
     #def get_true_obliquity(self,arg,method):
 
