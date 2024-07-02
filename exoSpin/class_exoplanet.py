@@ -46,7 +46,7 @@ class Exoplanet():
         vsini = vsini * u.km/u.s
         self.vsini = vsini
 
-        mass = mass * Mjup
+        mass = mass * u.Mjup
         self.mass = mass
 
         period = period * u.hr
@@ -55,18 +55,18 @@ class Exoplanet():
         self.velocity = 2*np.pi*radius.value/period
 
         # Setting limits
-        self.v_lim = np.sqrt(c.G * mass*u.Mjup/(radius.max*u.Rjup))
+        self.v_lim = np.sqrt(c.G * mass*u.Mjup/(radius.value.max()*u.Rjup))
         self.P_lim = 2*np.pi*(radius.value**(3/2))/(np.sqrt(c.G*mass*u.Mjup))
 
         # Setting unknows parameters
-        self.ip = null
-        self.ip_pdf = null
+        self.ip = None
+        self.ip_pdf = None
 
-        self.proj_obli = null
-        self.proj_obli_pdf = null
+        self.proj_obli = None
+        self.proj_obli_pdf = None
 
-        self.true_obli = null
-        self.true_obli_pdf = null
+        self.true_obli = None
+        self.true_obli_pdf = None
 
     # def order_data(self):
 
@@ -102,10 +102,10 @@ class Exoplanet():
             print('Working on..')
 
     def get_orbital_inclination(self,arg):
-        
+        bins = 200
         # Compute io pdf
         angles = np.linspace(0,180,1000)
-        io_kde = self.get_pdf(self,'orbital_inclination')
+        io_kde = self.get_pdf('orbital_inclination')
         io_pdf = io_kde(angles)
 
         if arg=='pdf':
@@ -114,6 +114,7 @@ class Exoplanet():
             plt.xlabel('Degree (°)')
             plt.ylabel('PDF - Orbital inclination \n $i_p$ = '+ (str(round(angles[np.argmax(io_pdf)],2))) + '°')
             plt.legend()
+            plt.show()
         
         elif arg=='distribution':
             plt.figure()
@@ -122,6 +123,7 @@ class Exoplanet():
             ip_err    =  np.std(ip_max)
             plt.title('Distribution - Orbital inclination  \n $i_p$ = '+ (str(round(ip_max,2)))+ '$\pm$'+ str(ip_err) + '°')
             plt.xlabel('Degree (°)')
+            plt.show()
         else : 
             plt.figure()
             y, x, _ = plt.hist(self.io, bins=bins, density=True, color='#50C878',label='Distribution of $i_po')
@@ -132,12 +134,13 @@ class Exoplanet():
             plt.plot(angles,io_pdf,color='green',label='PDF of $i_o$')
             plt.xlabel('Degree (°)')
             plt.legend()
+            plt.show()
             
     def get_radius(self,arg):
         
         # Compute radius pdf
-        meters = np.linspace(0,4,1000)
-        radius_kde = self.get_pdf(self,'radius')
+        meters = np.linspace(0,4,self.radius.size)
+        radius_kde = self.get_pdf('radius')
         radius_pdf = radius_kde(meters)
 
         if arg=='pdf':
@@ -146,6 +149,7 @@ class Exoplanet():
             plt.xlabel('Meters ($R_{Jup}$)')
             plt.ylabel('PDF - Radius \n $R$ = '+ (str(round(angles[np.argmax(radius_pdf)],2))) + '°')
             plt.legend()
+            plt.show()
         
         elif arg=='distribution':
             plt.figure()
@@ -154,6 +158,7 @@ class Exoplanet():
             radius_err    =  np.std(radius_max)
             plt.title('Distribution - PDF - Radius \n $R$ = '+ (str(round(radius_max,2)))+ '$\pm$'+ str(radius_err) + '°')
             plt.xlabel('Meters ($R_{Jup}$)')
+            plt.show()
         else : 
             plt.figure()
             y, x, _ = plt.hist(self.radius.value, bins=bins, density=True, color='#50C878',label='Distribution of $R$')
@@ -163,6 +168,7 @@ class Exoplanet():
             plt.plot(meters,radius_pdf,color='#666666',label='PDF of $R$')
             plt.xlabel('Meters ($R_{Jup}$)')
             plt.legend()
+            plt.show()
  
     def get_rot_velocity(self,arg):
 
@@ -174,7 +180,7 @@ class Exoplanet():
 
         # Compute vsini pdf
         velocities = np.linspace(0,self.v_lim,1000)
-        vsini_kde = self.get_pdf(self,'rotational_velocity')
+        vsini_kde = self.get_pdf('rotational_velocity')
         vsini_pdf_pdf = io_kde(velocities)
 
         if arg=='pdf':
@@ -183,6 +189,7 @@ class Exoplanet():
             plt.xlabel('Velocity ($km.s^{-1}$)')
             plt.ylabel('PDF - Rotational velocity \n $\\nu \\sin i_p$ = '+ (str(round(angles[np.argmax(vsini_pdf)],2))) + '°')
             plt.legend()
+            plt.show()
         
         elif arg=='distribution':
             plt.figure()
@@ -191,6 +198,7 @@ class Exoplanet():
             vsini_err    =  np.std(vsini_max)
             plt.title('Distribution - PDF - Rotational velocity \n $\\nu \\sin i_p$ = '+ (str(round(vsini_max,2)))+ '$\pm$'+ str(radius_err) + '°')
             plt.xlabel('Velocity ($km.s^{-1}$)')
+            plt.show()
         else : 
             plt.figure()
             y, x, _ = plt.hist(self.vsini.value, bins=bins, density=True, color='#50C878',label='Distribution of $i_p$')
@@ -200,6 +208,7 @@ class Exoplanet():
             plt.xlabel('Velocity ($km.s^{-1}$)')
             plt.plot(velocities,vsini_pdf,color='#666666',label='PDF of $R$')
             plt.legend()   
+            plt.show()
 
     def get_start_inclination(self,arg):
         
@@ -266,7 +275,8 @@ class Exoplanet():
 
     def get_spin_axis(self,arg,method):
 
-        # Compute io pdf
+        # Compute ip pdf
+
         if method =='easy':
             angles = np.linspace(0,180,1000)
             ip_kde = self.get_pdf(self.ip,'orbital_inclination')
@@ -349,10 +359,7 @@ class Exoplanet():
                 plt.legend()
 
         else :
-            return "You must choose a method (easy/complex)"
-
-
-        
+            return "You must choose a method (easy/complex)"     
         
     #def get_true_obliquity(self,arg,method):
 

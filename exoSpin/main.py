@@ -37,11 +37,11 @@ omega_o_file = open(omega_o_input, "r")
 omega_o_samp = np.loadtxt(omega_o_file, skiprows=1)
 P = input('What is the period of the exoplanet? (h unit)? ')
 M = input('What is the mass of the exoplanet? (M_Jup unit)? ')
-
 print()
 print('ExoSpin Computing ...')
 print()
-
+# ../exoplanet/data/io.dat
+# ../exoplanet/data/rp_vrot.txt
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 ## Rearrange Data
 
@@ -54,7 +54,10 @@ print('Which method of computing do you want? (easy/complex)')
 if input()=='easy':
     print()
     print('... computing ...')
-    #exoplanet_input.easy_obliquity()
+    ab_pic_b = Exoplanet('AB Pic b',io_samp, radius_samp,vsini_samp,io_samp,2.1,10)
+    ab_pic_b.get_orbital_inclination('')
+    ab_pic_b.get_radius('distribution')
+    ab_pic_b.get_rot_velocity('')
 else :
     print()
     print('... computing ...')
