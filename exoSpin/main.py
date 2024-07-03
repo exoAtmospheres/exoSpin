@@ -23,6 +23,8 @@ print('Initializing ExoSpin ...' )
 print()
 print('-> ExoSpin Configuration')
 print()
+
+exoplanet_name = input('What\'s the name of your beautiful exoplanet? ')
 io_input = input('Where are your data for orbital inclination (° unit)? ')
 io_file = open(io_input, "r")
 io_samp = np.loadtxt(io_file, skiprows=1)
@@ -37,33 +39,45 @@ omega_o_file = open(omega_o_input, "r")
 omega_o_samp = np.loadtxt(omega_o_file, skiprows=1)
 P = input('What is the period of the exoplanet? (h unit)? ')
 M = input('What is the mass of the exoplanet? (M_Jup unit)? ')
+
+exoplanet = Exoplanet(exoplanet_name, io_samp, radius_samp, vsini_samp, omega_o_samp, P, M) 
+
 print()
 print('ExoSpin Computing ...')
 print()
-# ../exoplanet/data/io.dat
-# ../exoplanet/data/rp_vrot.txt
-# ------------------------------------------------------------------------------------------------------------------------------------------------
-## Rearrange Data
-
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------
-## Run ExoSpin
+## Computing ExoSpin
 print()
-print('Which method of computing do you want? (easy/complex)')
 
-if input()=='easy':
+a = input('Which method of computing do you want? (easy/complex) ')
+
+while a!='easy' and a!='complex':
     print()
-    print('... computing ...')
-    ab_pic_b = Exoplanet('AB Pic b',io_samp, radius_samp,vsini_samp,io_samp,2.1,10)
-    ab_pic_b.get_orbital_inclination('')
-    ab_pic_b.get_radius('distribution')
-    ab_pic_b.get_rot_velocity('')
-else :
+    print('You need to choose a method of computing!')
     print()
-    print('... computing ...')
-    #exoplanet_input.complex_obliquity
+    a = input('Which method of computing do you want? (easy/complex) ')
+
+if a=='easy':
+    print()
+    print('... easy method computing ...')
+    print()
+    print('... spin axis computing ...')
+    print()
+    print('... obliquity computing ...')
+elif a=='complex' :
+    print()
+    print('... complex method computing ...')
+    print()
+    print('... spin axis computing ...')
+    print()
+    print('... obliquity computing ...')
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+## Plot ExoSpin
 
 print()
-print('Computing done ^^ !')
+print('There is the plot for the obliquity of ' + exoplanet.planet_name)
 print()
 
+# exoplanet/data/rp_vrot.txt
