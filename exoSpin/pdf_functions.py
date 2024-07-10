@@ -87,7 +87,7 @@ def ip_complex_pdf(v_kde,vsini_kde,v_range,n_points):
     ### Integral calculation
     for k, cos_k in enumerate (np.cos(angles_rad)):
         int_dv = v_kde(v_range)*vsini_kde(v_range*np.sqrt(1-cos_k*cos_k))
-        cos_ip_complex_pdf[k] = np.trapz(int_dv,v_range)
+        cos_ip_pdf[k] = np.trapz(int_dv,v_range)
     ### Normalization of cos_ip PDF
     cos_ip_pdf /= np.trapz(cos_ip_pdf,angles_rad)
     ### PDF of ip
@@ -97,17 +97,29 @@ def ip_complex_pdf(v_kde,vsini_kde,v_range,n_points):
     ip_pdf /= np.trapz(ip_pdf,angles)
     return ip_pdf
 
+
 def proj_obli_complex_pdf(io_kde,ip_pdf,n_points):
-    Lio = kde(np.deg2rad(io)) 
+    Lio = io_kde
     angles_rad = np.linspace(0,np.pi,n_points)
     proj_obli_pdf = np.zeros_like(angles_rad)
     ### Integral calculation
     for k, ang_k in enumerate (angles_rad):
-        int_ = ip_complex_pdf*(Lio(angles_rad-ang_k)+Lio(angles_rad+ang_k))
+        int_ = ip_pdf*(Lio(angles_rad-ang_k)+Lio(angles_rad+ang_k))
         proj_obli_pdf[k] = np.trapz(int_,angles_rad)
     # Normalization 
     angles = angles_rad*180/np.pi
     proj_obli_pdf /= np.trapz(proj_obli_pdf,angles)
-    return product_pdf
+    return proj_obli_pdf
 
-
+def true_obli_complex_pdf(io_kde,ip_pdf,n_points):
+    Lio = io_kde
+    angles_rad = np.linspace(0,np.pi,n_points)
+    proj_obli_pdf = np.zeros_like(angles_rad)
+    ### Integral calculation
+    for k, ang_k in enumerate (angles_rad):
+        int_ = ip_pdf*(Lio(angles_rad-ang_k)+Lio(angles_rad+ang_k))
+        proj_obli_pdf[k] = np.trapz(int_,angles_rad)
+    # Normalization 
+    angles = angles_rad*180/np.pi
+    proj_obli_pdf /= np.trapz(proj_obli_pdf,angles)
+    return proj_obli_pdf
