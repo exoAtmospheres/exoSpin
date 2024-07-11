@@ -30,7 +30,37 @@ from plot_class import Plot
 class Exoplanet():
 
     def __init__(self,planet_name, io, radius, vsini, omega_o, period, mass):
-        
+        """
+        Initialize every parameters for the Exoplanet class object.
+
+        Args:
+            planet_name (String) : Name of the exoplanet.
+            io (numpy.ndarray) : 1D array representing data of the orbital inclination system.
+            radius (astropy.units.quantity.Quantity) : 1D array representing data of the exoplanet's radius.
+            vsini (astropy.units.quantity.Quantity) : 1D array representing data of the exoplanet's rotational velocity.
+            omega_o (numpy.ndarray) : 1D array representing data of the exoplanet's sky projected inclination.
+            period (astropy.units.quantity.Quantity) : a quantity representing the exoplanet's period.
+            mass (astropy.units.quantity.Quantity) : a quantity representing the exoplanet's mass.
+
+
+        Attributes:
+            planet_name (String) : Name of the exoplanet.
+            io (numpy.ndarray) : 1D array representing data of the orbital inclination system.
+            radius (astropy.units.quantity.Quantity) : 1D array representing data of the exoplanet's radius.
+            vsini (astropy.units.quantity.Quantity) : 1D array representing data of the exoplanet's rotational velocity.
+            omega_o (numpy.ndarray) : 1D array representing data of the exoplanet's sky projected inclination.
+            period (astropy.units.quantity.Quantity) : a quantity representing the exoplanet's period.
+            mass (astropy.units.quantity.Quantity) : a quantity representing the exoplanet's mass.
+            velocity (numpy.ndarray) : 1D array representing data of the exoplanet's velocity computed with radius and period data.
+            v_lim (astropy.units.quantity.Quantity) : a quantity representing the velocity break limit of the exoplanet.
+            P_lim (astropy.units.quantity.Quantity) : a quantity representing the period break limit of the exoplanet.
+            lambda_ (numpy.ndarray) : 1D array representing data of t.
+            ip (numpy.ndarray) : 1D array representing data of the exoplanet's spin axis.
+            proj_obli (numpy.ndarray) : 1D array representing data of the exoplanet's projected obliquity.
+            true_obli (numpy.ndarray) : 1D array representing data of the exoplanet's true obliquity.
+
+        """
+
         self.planet_name = planet_name
 
         # Checking if io is in rad or deg :
@@ -66,6 +96,8 @@ class Exoplanet():
         self.P_lim = P_lim
 
         # Setting unknown parameters
+        self.lambda_ = None
+        
         self.ip = None
 
         self.proj_obli = None
@@ -75,6 +107,10 @@ class Exoplanet():
     ## Computing methods
 
     def spin_axis_data(self):
+        """
+        Compute the spin axis data of the exoplanet
+        """
+
         P_sample = (self.period > self.P_lim)
         # Set vel and visini with P > P_limit condition and v < v_limit
         self.vsini=self.vsini[P_sample]
@@ -89,6 +125,9 @@ class Exoplanet():
         self.ip=np.rad2deg(ip)
 
     def proj_obli_data(self):
+        """
+        Compute the projected obliquity data of the exoplanet
+        """
 
         if len(self.io) > self.ip.size:
             self.io =np.random.choice(self.io,self.ip.size)
@@ -98,10 +137,13 @@ class Exoplanet():
         self.proj_obli = np.abs(self.io-self.ip)
 
     def true_obli_data(self):
+        """
+        Compute the true obliquity data of the exoplanet
+        """
     
         self.omega_o =np.random.choice(self.omega_o,self.ip.size)
         omega_p = np.random.uniform(0, 180, self.ip.size)
-        self.lambda_ = self.omega_o-omega_p
+        self.lambda_ = -5-omega_p
     
         true_obli = np.arccos(np.cos(np.deg2rad(self.ip))*np.cos(np.deg2rad(self.io))+np.sin(np.deg2rad(self.ip))*np.sin(np.deg2rad(self.io))*np.cos(np.deg2rad(self.lambda_)))
         true_obli = np.rad2deg(true_obli)
@@ -110,7 +152,42 @@ class Exoplanet():
     ## Plot methods
 
     def hist(self,arg,color_graph):
+        """
+        Compute and save histogram plot of a exoplanet parameter.
 
+        Args:
+            arg (String): a string that describe which histogram to plot.
+                        {
+                        'Orbital inclination',
+                        'Radius',
+                        'Rotational velocity',
+                        'Sky projected inclination',
+                        'Sky projected spin-orbit',
+                        'Spin axis',
+                        'Project obliquity',
+                        'True obliquity'
+                        }
+            color_graph (String): a string to set the graph color.
+
+        Returns:
+            Plot : a Plot object that has every important parameters of the histogram 
+
+        Raises:
+            If the arg is not in the excepted values.    
+        """
+
+        if arg not in {
+            'Orbital inclination',
+            'Radius',
+            'Rotational velocity',
+            'Sky projected inclination',
+            'Sky projected spin-orbit',
+            'Spin axis',
+            'Project obliquity',
+            'True obliquity'
+        }:
+            raise ValueError("The arg value is not in the expected values")
+                        
         bins = 200
         if color_graph == None:
             color_graph = '#74D0F1'
@@ -185,12 +262,49 @@ class Exoplanet():
             plot = Plot('Histogram' , self.omega_o , None , xlabel , None , color_graph , title)
             return plot
 
-        else:
-            print('Error - You need to set argument')
-            return None
-
     def pdf(self,arg,color_graph):
+        """
+        Compute and save the PDF plot of a exoplanet parameter.
 
+        Args:
+            arg (String): a string that describe which histogram to plot.
+                        {
+                        'Orbital inclination',
+                        'Radius',
+                        'Rotational velocity',
+                        'Sky projected inclination',
+                        'Sky projected spin-orbit',
+                        'Spin axis - easy',
+                        'Spin axis - complex',
+                        'Projected obliquity - easy',
+                        'Projected obliquity - complex',
+                        'True obliquity - easy',
+                        'True obliquity - complex'
+                        }
+            color_graph (String): a string to set the graph color.
+
+        Returns:
+            Plot : a Plot object that has every important parameters of the histogram 
+
+        Raises:
+            If the arg is not in the excepted values.    
+        """
+
+        if arg not in {
+            'Orbital inclination',
+            'Radius',
+            'Rotational velocity',
+            'Sky projected inclination',
+            'Sky projected spin-orbit',
+            'Spin axis - easy',
+            'Spin axis - complex',
+            'Projected obliquity - easy',
+            'Projected obliquity - complex',
+            'True obliquity - easy',
+            'True obliquity - complex',
+        }:
+            raise ValueError("The arg value is not in the expected values")
+               
         n_easy = 1000
         n_complex = 100
         if color_graph == None:
@@ -277,7 +391,6 @@ class Exoplanet():
             plot = Plot('PDF' , angles , pro_obli_pdf , xlabel , ylabel , color_graph , title)
             return plot
 
-
         elif arg=='True obliquity - easy':
             angles = np.linspace(0,180,n_easy)
             true_obli_pdf = pdf(kde(self.true_obli),angles)
@@ -306,8 +419,26 @@ class Exoplanet():
             return plot
 
     def plot_obli(self,arg):
+        """
+        Plot the obliquity of the exoplanet.
 
-        angles = np.linspace(0,180,1000)
+        Args:
+            arg (String): a string that describe which histogram to plot.
+                        {
+                        'easy',
+                        'complex'
+                        }
+            color_graph (String): a string to set the graph color.
+
+        Raises:
+            If  arg is not in the excepted values
+        """
+
+        if arg not in {
+            'easy',
+            'complex'
+        }:
+            raise ValueError("The arg value is not in the expected values")
 
         if arg == 'easy':
 
@@ -381,42 +512,103 @@ class Exoplanet():
             io_plot = self.pdf('Orbital inclination','#dad45e')
             ip_plot = self.pdf('Spin axis - complex', 'green')
             proj_plot = self.pdf('Projected obliquity - complex','#dad45e')
-            true_plot = self.pdf('True obliquity - easy','#d04648')
-
-
+            true_plot = self.pdf('True obliquity - complex','#d04648')
 
             fig_final = plt.figure()
-            fig, axs = plt.subplots(2,2,figsize=(15,5))
-            axs[0,0].plot(io_plot.x,io_plot.y,color=io_plot.color,label='PDF of $i_o$')
-            axs[0,0].plot(ip_plot.x,ip_plot.y,color=ip_plot.color,label='PDF of $i_p$')
-            axs[0,0].set_title('Orbital inclination and spin axis')
-            axs[0,0].set(ylabel='PDF')
-            plt.legend()
+            fig, axs = plt.subplots(2,2, figsize=(10,8))
+            axs[0,0].plot(io_plot.x,io_plot.y,color=io_plot.color,label='$i_o$')
 
-            axs[1,0].plot(proj_plot.x,proj_plot.y,color=proj_plot.color,label='PDF of $|i_p-i_o|$')
+            axs[0,0].tick_params(axis='y', colors=io_plot.color)
+            axs[0,0].set_title('Orbital inclination and companion spin axis')
+            axs[0,0].set(ylabel='PDF')
+
+            axs2 = axs[0,0].twinx()
+            axs2.plot(ip_plot.x,ip_plot.y,color=ip_plot.color,label='$i_p$')
+            axs2.spines['left'].set_color(io_plot.color)
+            axs2.spines['right'].set_color(ip_plot.color)
+            axs2.tick_params(axis='y', colors=ip_plot.color)
+            axs2.set(ylabel='PDF')
+
+            lines_1, labels_1 = axs[0, 0].get_legend_handles_labels()
+            lines_2, labels_2 = axs2.get_legend_handles_labels()
+            axs2.legend(lines_1 + lines_2, labels_1 + labels_2)
+
+
+            #Diagram
+            star = plt.Circle((0.35, 0.5), 0.07, color='#ffd319', ec='#bb6f1e', lw=2, label=self.planet_name + '\'s star')
+            orbit = patches.Ellipse((0.5,0.5), 0.70,0.45, ec='black', lw=2, linestyle = 'dotted', fill=False )
+            exoplanet = plt.Circle((0.85,0.5), 0.03, color = '#133984', ec='#c3dbff', lw=1, label = self.planet_name)
+
+            ip_max = np.deg2rad(angles[np.argmax(io_plot.x)])
+
+            # Define the spin axis line through the planet
+            spin_length = 0.05
+            x0, y0 = 0.85, 0.5
+            x1 = x0 + spin_length * np.cos(ip_max)
+            y1 = y0 + spin_length * np.sin(ip_max)
+            x2 = x0 - spin_length * np.cos(ip_max)
+            y2 = y0 - spin_length * np.sin(ip_max)
+
+
+            axs[0,1].set_title('Diagram of ' + self.planet_name + '\'s system')
+            axs[0,1].add_patch(star)
+            axs[0,1].add_patch(orbit)
+            axs[0,1].add_patch(exoplanet)
+            axs[0,1].plot([x2, x1], [y2, y1], color=ip_plot.color, label='Spin Axis')
+            axs[0,1].set_xlim(0, 1)
+            axs[0,1].set_ylim(0, 1)
+            axs[0,1].set_aspect('equal')
+            axs[0,1].set_axis_off()
+            axs[0,1].legend()
+
+
+            axs[1,0].plot(proj_plot.x,proj_plot.y,color=proj_plot.color,label='$|i_p-i_o|$')
             axs[1,0].set_title('Projected obliquity')
             axs[1,0].set(ylabel='PDF')
             axs[1,0].set(xlabel='Degree (°)')
-            plt.legend()
+            axs[1,0].legend()
 
-            axs[1,1].plot(true_plot.x,true_plot.y,color=true_plot.color,label='PDF of $\Psi_{op}$')
+            axs[1,1].plot(true_plot.x,true_plot.y,color=true_plot.color,label='$\Psi_{op}$')
             axs[1,1].set_title('True obliquity')
             axs[1,1].set(xlabel='Degree (°)')
-            plt.legend()
-
-            plt.figure(fig_final.number)
+            axs[1,1].legend()
             plt.show()
-
-        else : 
-            return None
 
     ## Set methods
 
-    def set_data(self,arg,input_):
+    def set_data(self,arg,data):
+        """
+        Set new data for an exoplanet parameter. 
+
+        Args:
+            arg (String): a string that describe which histogram to plot.
+                        {
+                        'Orbital inclination',
+                        'Radius',
+                        'Rotational velocity',
+                        'Sky projected inclination',
+                        'Sky projected spin-orbit',
+                        'Spin axis',
+                        'Project obliquity',
+                        'True obliquity'
+                        }
+            data: a input that contains the data to be set
+
+        Raises:
+            If the arg is not in the excepted values and if data and self attributes don't have the same input    
+        """
+
+        if arg not in {
+            'Orbital inclination',
+            'Radius',
+            'Rotational velocity',
+            'Sky projected inclination',
+
+        }:
+            raise ValueError("The arg value is not in the expected values")
+
         if arg=='Orbital inclination':
             self.io = input_
-        elif arg=='Spin axis':
-            self.ip = input_
         elif arg=='Rotational velocity':
             self.io = input_
         elif arg=='Radius':
@@ -431,113 +623,3 @@ class Exoplanet():
             self.planet_name = input_
         else:
             return None
-
-    # def get_data(self, arg):
-
-    #     if arg=='Orbital inclination':
-    #         return self.io
-
-    #     elif arg=='Radius':
-    #         return self.radius
-
-    #     elif arg=='Rotational velocity':
-    #         return self.vsini
-
-    #     elif arg=='Star inclination':
-    #         return self.omega_o
-        
-    #     elif arg=='Spin axis':
-    #         return self.ip
-        
-    #     elif arg=='Projected obliquity':
-    #         return self.proj_obli
-        
-    #     elif arg=='True obliquity':
-    #         return self.true_obli
-
-    # def get_pdf(self, arg):
-        
-    #     n_easy = 1000
-    #     n_complex = 100
-
-    #     if arg=='Orbital inclination':
-    #         angles = np.linspace(0,180,n_easy)
-    #         io_pdf = pdf(kde(self.io),angles)
-    #         return io_pdf
-
-    #     elif arg=='Radius':
-    #         meters = np.linspace(0,4,n_easy)
-    #         radius_pdf = pdf(kde(self.radius),meters)
-    #         return radius_pdf
-
-    #     elif arg=='Rotational velocity':
-    #         velocities = np.linspace(0,self.v_lim,n_easy)
-    #         vsini_pdf = pdf(kde(self.vsini),velocities)
-    #         return vsini_pdf
-
-    #     if arg=='Orbital inclination':
-    #         angles = np.linspace(0,180,n_easy)
-    #         omega_o_pdf = pdf(kde(self.omega_o),angles)
-    #         return omega_o_pdf
-
-    #     if arg=='Spin axis':
-    #         user_input = input('Which method of computing do you want? (easy/complex) ')
-    #         while user_input!='easy' and user_input!='complex':
-    #             print()
-    #             print('You have to choose a method!')
-    #             print()
-    #             user_input = input('Which method of computing do you want? (easy/complex) ')
-    #         if user_input == 'easy':
-    #             angles = np.linspace(0,180,n_easy)
-    #             ip_pdf = pdf(kde(self.ip),angles)
-    #             return ip_pdf
-    #         else:
-    #             v_range = np.linspace(0,self.v_lim,self.ip.size)                                                                                                             
-    #             ip_pdf = ip_complex_pdf(kde(self.velocity),kde(self.vsini),v_range,n_complex)
-    #             return ip_pdf
-
-    #     if arg=='Projected obliquity':
-    #         user_input = input("Which computing method? (easy/complex)")
-    #         while user_input!='easy' and user_input!='complex':
-    #             print()
-    #             print('You have to choose a method!')
-    #             print()
-    #             user_input = input("Which computing method? (easy/complex)")
-    #         if user_input == 'easy':
-    #             angles = np.linspace(0,180,n_easy)
-    #             pro_obli_pdf = pdf(kde(self.proj_obli),angles)
-    #             return fig, ax
-    #         else:                  
-    #             v_range = np.linspace(0,self.v_lim,self.ip.size)                                                                                                             
-    #             ip_pdf = ip_complex_pdf(kde(self.velocity),kde(self.vsini),v_range,n_complex)    
-    #             pro_obli_pdf = proj_obli_complex_pdf(kde(np.deg2rad(self.io)),ip,n_complex)
-    #             return pro_obli_pdf
-
-
-    #     if arg=='True obliquity':
-    #         user_input = input("Which computing method? (easy/complex)")
-    #         while user_input!='easy' and user_input!='complex':
-    #             print()
-    #             print('You have to choose a method!')
-    #             print()
-    #             user_input = input("Which computing method? (easy/complex)")
-    #         if user_input == 'easy':
-    #             angles = np.linspace(0,180,n_easy)
-    #             true_obli_pdf = pdf(kde(self.true_obli),angles)
-    #             return fig, ax
-    #         else:                  
-    #             print('Working on')
-
-
-
-
-
-
-
-
-
-
-
-        
-
-    

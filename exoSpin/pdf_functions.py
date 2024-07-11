@@ -41,8 +41,6 @@ def kde(data):
 
     if data.ndim != 1:
         raise ValueError("The data must be in a 1D array.")
-    if data == None:
-        raise ValueError("The data must contains values")
 
     return gaussian_kde(data,bw_method='scott')
 
