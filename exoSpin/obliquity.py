@@ -1,9 +1,8 @@
 '''
-ExoSpin Obliquity run script
+ExoSpin - Obliquity Run Script
 
-This run script is a way to get the important informations for computing obliquity
-from user's data.
-The function obliquity() does the run script
+This run script is a way to get the exoplanet obliquity from several parameters of the exoplanet.
+The function obliquity() does the run script.
 
 
 @authors : I. Abdoulwahab & P. Palma-Bifani & G. Chauvin & A. Simonnin
@@ -19,7 +18,11 @@ from exoplanet_class import *
 
 
 def obliquity():
-    """descrp
+    """
+    Compute the obliquity from exoplanet parameters and plot the obliquity.
+
+    Returns:
+        (Exoplanet): an Exoplanet class object.
 
     """
     # ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -70,7 +73,7 @@ def obliquity():
         print('Easy method computing ...')
     
     else :
-        print('Complex method computing') 
+        print('Complex method computing ...') 
 
     exoplanet.spin_axis_data()
     exoplanet.proj_obli_data()
@@ -82,8 +85,6 @@ def obliquity():
 
     print()
     print('-> ExoSpin Plot')
-    print()
-    print('There is the plot of ' + exoplanet.planet_name + '\'s obliquity')
     print()
 
     if a == "easy":

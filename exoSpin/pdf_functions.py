@@ -1,5 +1,5 @@
 '''
-ExoSpin run script - PDF important functions
+ExoSpin - PDF important functions
 
 
 @authors : I. Abdoulwahab & P. Palma-Bifani & G. Chauvin & A. Simonnin
@@ -298,28 +298,36 @@ def true_obli_complex_pdf(io_pdf,ip_pdf,lambda_pdf,n):
         (numpy.ndarray): 1D array representing the PDF of companion true obliquity.
     
     Raises:
-        ValueError: The number of evaluted points must be greater than 1, and PDFs must have the same length.
+        ValueError: The number of evaluted points must be greater than 1.
     """
+    
 
     if n <= 1:
         raise ValueError("The number of evaluted points must be greater than 1")
 
-    if len(io_pdf) != len(ip_pdf) or len(io_pdf) != len(omega_o_pdf) or len(ip_pdf) != len(omega_o_pdf):
-        raise ValueError("The PDFs must have the same length.")
+    # if len(io_pdf) != len(ip_pdf) or len(io_pdf) != len(lambda_pdf) or len(ip_pdf) != len(lambda_pdf):
+    #     raise ValueError("The PDFs must have the same length.")
 
-    n_samp = 1000
-    io_samp = np.random.choice(a=angles, p=io_pdf,size=n_samp)
-    ip_samp = np.random.choice(a=angles, p=ip_pdf,size=n_samp)
-    lambda_samp = np.random.choice(a=angles, p=lambda_pdf,size=n_samp)
+    angles_1 = np.linspace(0,180,1000)
+    angles_2 = np.linspace(0,180,100)
+
+    io_samp = np.random.choice(a=angles_1, p=io_pdf/np.sum(io_pdf),size=1000)
+    ip_samp = np.random.choice(a=angles_2, p=ip_pdf/np.sum(ip_pdf),size=1000)
+    lambda_samp = np.random.choice(a=angles_1, p=lambda_pdf/np.sum(lambda_pdf),size=1000)
+
+    plt.figure()
+
+    x_ ,y_ , _ = plt.hist()
 
     psi_samp = np.zeros_like(io_samp)
     
-    for i in range (n_samp):    
+    for i in range (n):    
         arg_1 = np.cos(np.deg2rad(io_samp[i]))*np.cos(np.deg2rad(ip_samp[i]))
         arg_2 = np.sin(np.deg2rad(io_samp[i]))*np.sin(np.deg2rad(ip_samp[i]))*np.cos(np.deg2rad(lambda_samp[i]))
-        psi_samp = np.rad2deg(np.arccos(arg_1+arg_2))
+        psi_samp[i] = np.arccos(arg_1+arg_2)
 
-    angles = np.linspace(0,180,n)
+    psi_samp = np.rad2deg(psi_samp)
+
     psi_kde = kde(psi_samp)
     
-    return pdf(psi_kde,angles)
+    return pdf(psi_kde,angles_2)
