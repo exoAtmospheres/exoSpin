@@ -284,7 +284,7 @@ def proj_obli_complex_pdf(io_kde,ip_pdf,n):
     proj_obli_pdf /= np.trapz(proj_obli_pdf,angles)
     return proj_obli_pdf
 
-def true_obli_complex_pdf(io_pdf,ip_pdf,lambda_pdf,n):
+def true_obli_complex_pdf(io_pdf,ip_pdf,lambda_pdf,nb):
     """
     Evaluate the companion true obliquity PDF.
 
@@ -292,7 +292,7 @@ def true_obli_complex_pdf(io_pdf,ip_pdf,lambda_pdf,n):
         io_pdf (numpy.ndarray): 1D array of KDE evaluated values of the orbital inclination.
         ip_pdf (numpy.ndarray): 1D array of KDE evaluated values of the companion spin axis.
         omega_o_pdf (numpy.ndarray): 1D array of KDE evaluated values of the star inclination.
-        n (int): Number of evaluated points.
+        nb (int): Number of evaluated points.
 
     Returns:
         (numpy.ndarray): 1D array representing the PDF of companion true obliquity.
@@ -302,32 +302,30 @@ def true_obli_complex_pdf(io_pdf,ip_pdf,lambda_pdf,n):
     """
     
 
-    if n <= 1:
+    if nb <= 1:
         raise ValueError("The number of evaluted points must be greater than 1")
 
     # if len(io_pdf) != len(ip_pdf) or len(io_pdf) != len(lambda_pdf) or len(ip_pdf) != len(lambda_pdf):
     #     raise ValueError("The PDFs must have the same length.")
 
-    angles_1 = np.linspace(0,180,1000)
-    angles_2 = np.linspace(0,180,100)
+    bins = 200
+    angles = np.linspace(0,180,nb)
+    angles_ip = np.linspace(0,180,100)
 
-    io_samp = np.random.choice(a=angles_1, p=io_pdf/np.sum(io_pdf),size=1000)
-    ip_samp = np.random.choice(a=angles_2, p=ip_pdf/np.sum(ip_pdf),size=1000)
-    lambda_samp = np.random.choice(a=angles_1, p=lambda_pdf/np.sum(lambda_pdf),size=1000)
-
-    plt.figure()
-
-    x_ ,y_ , _ = plt.hist()
+    io_samp = np.random.choice(a=angles, p=io_pdf/np.sum(io_pdf),size=nb)
+    ip_samp = np.random.choice(a=angles_ip, p=ip_pdf/np.sum(ip_pdf),size=nb)
+    lambda_samp = np.random.choice(a=angles, p=lambda_pdf/np.sum(lambda_pdf),size=nb)
 
     psi_samp = np.zeros_like(io_samp)
-    
-    for i in range (n):    
+
+    for i in range (nb):    
         arg_1 = np.cos(np.deg2rad(io_samp[i]))*np.cos(np.deg2rad(ip_samp[i]))
         arg_2 = np.sin(np.deg2rad(io_samp[i]))*np.sin(np.deg2rad(ip_samp[i]))*np.cos(np.deg2rad(lambda_samp[i]))
         psi_samp[i] = np.arccos(arg_1+arg_2)
 
     psi_samp = np.rad2deg(psi_samp)
 
-    psi_kde = kde(psi_samp)
+    psi_kde = gaussian_kde(psi_samp,bw_method='scott')
+    psi_pdf = psi_kde(angles)
     
-    return pdf(psi_kde,angles_2)
+    return psi_pdf

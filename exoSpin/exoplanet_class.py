@@ -421,9 +421,9 @@ class Exoplanet():
 
         elif arg=='True obliquity - complex': 
 
-            io_kde = kde(np.deg2rad(self.io))
-            lambda_kde = kde(np.deg2rad(self.lambda_)) 
-            angles = np.linspace(0,180,n_easy)     
+            io_kde = kde(self.io)
+            lambda_kde = kde(self.lambda_) 
+            angles = np.linspace(0,180,2*n_easy)     
             v_range = np.linspace(0,self.v_lim.value,self.ip.size)                                                                                                             
             
             ip_pdf = ip_complex_pdf(kde(self.velocity),kde(self.vsini),v_range,n_complex)  
@@ -432,12 +432,12 @@ class Exoplanet():
 
             angles_new = np.linspace(0,180,n_complex)
 
-            true_obli_pdf = true_obli_complex_pdf(io_pdf,ip_pdf,lambda_pdf,n_easy)
+            true_obli_pdf = true_obli_complex_pdf(io_pdf,ip_pdf,lambda_pdf,2*n_easy)
             ## Plot
             title = 'PDF - True obliquity  \n $\Psi_{op}$ = '+ str(round(angles[np.argmax(true_obli_pdf)],2))+ ' °'
             xlabel = 'Degree (°)'
             ylabel = 'PDF'
-            plot = Plot('PDF' , angles_new , true_obli_pdf , xlabel , ylabel , color_graph , title)
+            plot = Plot('PDF' , angles , true_obli_pdf , xlabel , ylabel , color_graph , title)
             return plot
 
     def plot_obli(self,arg):
