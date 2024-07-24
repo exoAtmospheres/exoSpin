@@ -1,0 +1,14 @@
+LICENSE
+README.md
+setup.py
+exoSpin/__init__.py
+exoSpin/exoplanet_class.py
+exoSpin/obliquity.py
+exoSpin/pdf_functions.py
+exoSpin/plot_class.py
+exoSpin.egg-info/PKG-INFO
+exoSpin.egg-info/SOURCES.txt
+exoSpin.egg-info/dependency_links.txt
+exoSpin.egg-info/not-zip-safe
+exoSpin.egg-info/requires.txt
+exoSpin.egg-info/top_level.txt

@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: exoSpin
+Version: 0.0
+Summary: exoSpin: The tool to measure obliquities of exoplanet
+Home-page: https://github.com/exoAtmospheres/exoSpin
+Author: Idriss Abdoulwahab & Paulina Palma-Bifani
+Author-email: 
+License: MIT
+Keywords: Obliquities Exoplanets
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.11
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: astropy
+Requires-Dist: matplotlib
+Requires-Dist: scipy
