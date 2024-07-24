@@ -111,7 +111,7 @@ class Plot ():
             raise ValueError("The input and self attribute don't have the same type")
         self.x = new_x
 
-    def set_x(self,new_y):
+    def set_y(self,new_y):
         """
         Set a new y-axis for the plot
 
