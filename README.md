@@ -1,6 +1,6 @@
 # exoSpin 
 
-<p align=“left”><img src=“exoSpin/exoSpin_logo.png” alt=“exoSpin” width="250"/></p>
+<p align=“left”><img src="exoSpin/exoSpin_logo.png" alt=“exoSpin” width="250"/></p>
 
 A tool to measure the obliquities of planets beyond our solar system. 
 
