@@ -42,7 +42,6 @@ class Exoplanet():
             period (astropy.units.quantity.Quantity) : a quantity representing the exoplanet's period.
             mass (astropy.units.quantity.Quantity) : a quantity representing the exoplanet's mass.
 
-
         Attributes:
             planet_name (String) : Name of the exoplanet.
             io (numpy.ndarray) : 1D array representing data of the orbital inclination system.
@@ -58,6 +57,7 @@ class Exoplanet():
             ip (numpy.ndarray) : 1D array representing data of the exoplanet's spin axis.
             proj_obli (numpy.ndarray) : 1D array representing data of the exoplanet's projected obliquity.
             true_obli (numpy.ndarray) : 1D array representing data of the exoplanet's true obliquity.
+            ip_pdf_saved (Plot) : a Plot that contains PDF data for spin axis
 
         """
 
@@ -103,6 +103,8 @@ class Exoplanet():
         self.proj_obli = None
 
         self.true_obli = None
+
+        self.ip_plot_saved = None
 
     ## Computing methods
 
@@ -151,7 +153,7 @@ class Exoplanet():
 
     ## Plot methods
 
-    def hist(self,arg,color_graph):
+    def hist(self,arg,color_graph = 'blue'):
         """
         Compute and save histogram plot of a exoplanet parameter.
 
@@ -189,8 +191,6 @@ class Exoplanet():
             raise ValueError("The arg value is not in the expected values")
                         
         bins = 200
-        if color_graph == None:
-            color_graph = '#74D0F1'
 
         if arg=='Orbital inclination':
             y, x, _ = plt.hist(self.io, bins=bins, density=True)
@@ -203,7 +203,7 @@ class Exoplanet():
             return plot
 
         elif arg=='Radius':
-            y, x, _ = plt.hist(self.io, bins=bins, density=True)
+            y, x, _ = plt.hist(self.radius, bins=bins, density=True)
             plt.close()
             x_max =  x[np.where(y == y.max())][0]
             x_err    =  np.std(x_max)
@@ -213,7 +213,7 @@ class Exoplanet():
             return plot
 
         elif arg=='Rotational velocity':
-            y, x, _ = plt.hist(self.io, bins=bins, density=True)
+            y, x, _ = plt.hist(self.vsini, bins=bins, density=True)
             plt.close()
             x_max =  x[np.where(y == y.max())][0]
             x_err    =  np.std(x_max)
@@ -272,7 +272,7 @@ class Exoplanet():
             plot = Plot('Histogram' , self.omega_o , None , xlabel , None , color_graph , title)
             return plot
 
-    def pdf(self,arg,color_graph):
+    def pdf(self,arg,color_graph = 'blue'):
         """
         Compute and save the PDF plot of a exoplanet parameter.
 
@@ -387,6 +387,7 @@ class Exoplanet():
             xlabel = 'Degree (°)'
             ylabel = 'PDF'
             plot = Plot('PDF' , angles , ip_pdf , xlabel , ylabel , color_graph , title)
+            self.ip_pdf_saved = plot
             return plot
 
         elif arg=='Projected obliquity - easy':
@@ -399,9 +400,8 @@ class Exoplanet():
             return plot
 
         elif arg=='Projected obliquity - complex': 
-            angles = np.linspace(0,180,n_complex)
-            v_range = np.linspace(0,self.v_lim.value,self.ip.size)                                                                                                             
-            ip_pdf = ip_complex_pdf(kde(self.velocity),kde(self.vsini),v_range,n_complex)    
+            angles = self.ip_pdf_saved.x                                                                                                             
+            ip_pdf = self.ip_pdf_saved.y    
             pro_obli_pdf = proj_obli_complex_pdf(kde(np.deg2rad(self.io)),ip_pdf,n_complex)
             ## Plot
             title = 'PDF - Projected obliquity  \n $|i_p-i_o|$ = '+ str(round(angles[np.argmax(pro_obli_pdf)],2))+ ' °'
@@ -426,7 +426,7 @@ class Exoplanet():
             angles = np.linspace(0,180,2*n_easy)     
             v_range = np.linspace(0,self.v_lim.value,self.ip.size)                                                                                                             
             
-            ip_pdf = ip_complex_pdf(kde(self.velocity),kde(self.vsini),v_range,n_complex)  
+            ip_pdf = self.ip_pdf_saved.y   
             io_pdf = pdf(io_kde,angles)
             lambda_pdf = pdf(lambda_kde,angles)
 

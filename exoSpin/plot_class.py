@@ -176,6 +176,5 @@ class Plot ():
             plt.title(self.title)
             plt.xlabel(self.xlabel)
             plt.ylabel(self.ylabel)
-            plt.legend()
             plt.show()
         
