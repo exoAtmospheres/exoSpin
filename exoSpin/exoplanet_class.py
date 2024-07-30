@@ -165,7 +165,7 @@ class Exoplanet():
                         'Radius',
                         'Rotational velocity',
                         'Sky projected inclination',
-                        'Sky projected spin-orbit',
+                        'Sky projected obliquity',
                         'Spin axis',
                         'Project obliquity',
                         'True obliquity'
@@ -184,7 +184,7 @@ class Exoplanet():
             'Radius',
             'Rotational velocity',
             'Sky projected inclination',
-            'Sky projected spin-orbit',
+            'Sky projected obliquity',
             'Spin axis',
             'Project obliquity',
             'True obliquity'
@@ -284,7 +284,7 @@ class Exoplanet():
                         'Radius',
                         'Rotational velocity',
                         'Sky projected inclination',
-                        'Sky projected spin-orbit',
+                        'Sky projected obliquity',
                         'Spin axis - easy',
                         'Spin axis - complex',
                         'Projected obliquity - easy',
@@ -306,7 +306,7 @@ class Exoplanet():
             'Radius',
             'Rotational velocity',
             'Sky projected inclination',
-            'Sky projected spin-orbit',
+            'Sky projected obliquity',
             'Spin axis - easy',
             'Spin axis - complex',
             'Projected obliquity - easy',
@@ -333,7 +333,7 @@ class Exoplanet():
         elif arg=='Radius':
             meters = np.linspace(0,4,n_easy)
             radius_pdf = pdf(kde(self.radius.value),meters)
-            title = 'PDF - Radius  \n $R$ = '+ str(round(meters[np.argmax(radius_pdf)],2))+ ' °'
+            title = 'PDF - Radius  \n $R$ = '+ str(round(meters[np.argmax(radius_pdf)],2))+ ' $R_{Jup}$'
             xlabel = 'Length ($R_{Jup}$)'
             ylabel = 'PDF'
             plot = Plot('PDF' , meters , radius_pdf , xlabel , ylabel , color_graph , title)
@@ -342,7 +342,7 @@ class Exoplanet():
         elif arg=='Rotational velocity':
             velocities = np.linspace(0,self.v_lim.value,n_easy)
             vsini_pdf = pdf(kde(self.vsini.value),velocities)
-            title = 'PDF - Rotational velocity  \n $\\nu sin (i_p)$ = '+ str(round(velocities[np.argmax(vsini_pdf)],2))+ ' °'
+            title = 'PDF - Rotational velocity  \n $\\nu sin (i_p)$ = '+ str(round(velocities[np.argmax(vsini_pdf)],2))+ ' $km.s^{-1}$'
             xlabel = 'Velocity ($km.s^{-1}$)'
             ylabel = 'PDF'
             plot = Plot('PDF' , velocities , vsini_pdf , xlabel , ylabel , color_graph , title)
