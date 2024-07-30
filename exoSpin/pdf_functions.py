@@ -10,16 +10,17 @@ ExoSpin - PDF important functions
 ## Imports
 
 import matplotlib.pyplot as plt
+
 import numpy as np
+
 import astropy.units as u
 import astropy.constants as c
-import pickle
 
 from scipy import interpolate
 from scipy.signal import savgol_filter
 from scipy.stats import gaussian_kde
 from scipy.stats import uniform
-from scipy.integrate import quad
+
 
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,7 +67,6 @@ def pdf(kde, domain):
     pdf /= np.trapz(pdf,domain)
 
     return pdf
-
 
 def cos_pdf(pdf,domain):
     """
@@ -252,7 +252,6 @@ def ip_complex_pdf(v_kde,vsini_kde,v_range,n):
     ip_pdf /= np.trapz(ip_pdf,angles)
     return ip_pdf
 
-
 def proj_obli_complex_pdf(io_kde,ip_pdf,n):
     """
     Evaluate the companion projected obliquity PDF.
@@ -304,9 +303,6 @@ def true_obli_complex_pdf(io_pdf,ip_pdf,lambda_pdf,nb):
 
     if nb <= 1:
         raise ValueError("The number of evaluted points must be greater than 1")
-
-    # if len(io_pdf) != len(ip_pdf) or len(io_pdf) != len(lambda_pdf) or len(ip_pdf) != len(lambda_pdf):
-    #     raise ValueError("The PDFs must have the same length.")
 
     bins = 200
     angles = np.linspace(0,180,nb)

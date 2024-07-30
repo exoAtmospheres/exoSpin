@@ -11,18 +11,27 @@ The function obliquity() does the run script.
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 ## Imports
-import sys, os, glob
-import numpy as np
-from scipy.interpolate import interp1d
-from exoplanet_class import *
+
+from exoSpin.exoplanet_class import *
+from exoSpin.pdf_functions import *
+from exoSpin.plot_class import *
 
 
-def obliquity():
+def obliquity(exoplanet_name, io_path, radius_path, vsini_path, omega_o_path, P, M):
     """
-    Compute the obliquity from exoplanet parameters and plot the obliquity.
+    From exoplanet data, the function computes the obliquity of the planet and returns an Exoplanet obkect.
+
+    Args:
+        exoplanet_name (String): Planet's name.
+        io_path (String): Path for the orbital inclination data file.
+        radius_path (String): Path for the radius data file.
+        vsini_path (String): Path for the rotational velocity data file.
+        omega_o_path (String): Path for the sky projected inclination data file.
+        P (float): Period of the planet.
+        M (float): Mass of the planet.
 
     Returns:
-        (Exoplanet): an Exoplanet class object.
+        (Exoplanet): An Exoplanet object.
 
     """
     # ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -33,24 +42,17 @@ def obliquity():
     print('-> ExoSpin Configuration')
     print()
 
-    exoplanet_name = input('What\'s the name of your beautiful exoplanet? ')
-    io_input = input('Where are your data for orbital inclination (° unit)? ')
-    io_file = open(io_input, "r")
+    io_file = open(io_path, "r")
     io_samp = np.loadtxt(io_file, skiprows=1)
-    radius_input= input('Where are your data for radius (R_Jup unit)? ')
-    radius_file = open(radius_input, "r")
+
+    radius_file = open(radius_path, "r")
     radius_samp = np.loadtxt(radius_file, skiprows=1,usecols=(1,))
-    vsini_input= input('Where are your data for rotational velocity (km/s unit)? ')
-    vsini_file = open(vsini_input, "r")
+
+    vsini_file = open(vsini_path, "r")
     vsini_samp = np.loadtxt(vsini_file, skiprows=1,usecols=(2,))
-    omega_o_input = input('Where are your data for sky projected inclination (° unit)? ')
-    omega_o_file = open(omega_o_input, "r")
+
+    omega_o_file = open(omega_o_path, "r")
     omega_o_samp = np.loadtxt(omega_o_file, skiprows=1)
-    
-    P = input('What is the period of the exoplanet? (h unit)? ')
-    P = float(P)
-    M = input('What is the mass of the exoplanet? (M_Jup unit)? ')
-    M = float(M)
 
     exoplanet = Exoplanet(exoplanet_name, io_samp, radius_samp, vsini_samp, omega_o_samp, P, M) 
 

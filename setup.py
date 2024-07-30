@@ -21,7 +21,7 @@ def get_requires():
 
 setup(
     name="exoSpin",
-    version=get_property("__version__", "exospin"),
+    version=get_property("__version__", "exoSpin"),
     description="exoSpin: The tool to measure obliquities of exoplanet",
     url="https://github.com/exoAtmospheres/exoSpin",
     author="Idriss Abdoulwahab & Paulina Palma-Bifani",
