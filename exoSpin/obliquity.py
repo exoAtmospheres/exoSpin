@@ -12,9 +12,7 @@ The function obliquity() does the run script.
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 ## Imports
 
-from exoSpin.exoplanet_class import *
-from exoSpin.pdf_functions import *
-from exoSpin.plot_class import *
+from exoplanet_class import *
 
 
 def obliquity(exoplanet_name, io_path, radius_path, vsini_path, omega_o_path, P, M):
@@ -51,8 +49,11 @@ def obliquity(exoplanet_name, io_path, radius_path, vsini_path, omega_o_path, P,
     vsini_file = open(vsini_path, "r")
     vsini_samp = np.loadtxt(vsini_file, skiprows=1,usecols=(2,))
 
-    omega_o_file = open(omega_o_path, "r")
-    omega_o_samp = np.loadtxt(omega_o_file, skiprows=1)
+    if isinstance(omega_o_path,float) or isinstance(omega_o_path,int):
+        omega_o_samp = omega_o_path
+    else:
+        omega_o_file = open(omega_o_path, "r")
+        omega_o_samp = np.loadtxt(omega_o_file, skiprows=1)
 
     exoplanet = Exoplanet(exoplanet_name, io_samp, radius_samp, vsini_samp, omega_o_samp, P, M) 
 

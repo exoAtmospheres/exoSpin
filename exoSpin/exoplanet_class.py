@@ -23,8 +23,8 @@ from scipy.signal import savgol_filter
 from scipy.stats import gaussian_kde
 from scipy.stats import uniform
 
-from exoSpin.pdf_functions import *
-from exoSpin.plot_class import Plot
+from pdf_functions import *
+from plot_class import Plot
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -35,30 +35,32 @@ class Exoplanet():
         Initialize every parameters for the Exoplanet class object.
 
         Args:
-            planet_name (String) : Name of the exoplanet.
-            io (numpy.ndarray) : 1D array representing data of the orbital inclination system.
-            radius (astropy.units.quantity.Quantity) : 1D array representing data of the exoplanet's radius.
-            vsini (astropy.units.quantity.Quantity) : 1D array representing data of the exoplanet's rotational velocity.
-            omega_o (numpy.ndarray) : 1D array representing data of the exoplanet's sky projected inclination.
-            period (astropy.units.quantity.Quantity) : a quantity representing the exoplanet's period.
-            mass (astropy.units.quantity.Quantity) : a quantity representing the exoplanet's mass.
+            planet_name (String): Name of the exoplanet.
+            io (numpy.ndarray): 1D array representing data of the orbital inclination system.
+            radius (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet's radius.
+            vsini (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet's rotational velocity.
+            omega_o (numpy.ndarray): 1D array representing data of the exoplanet's sky projected inclination.
+            period (astropy.units.quantity.Quantity): a quantity representing the exoplanet's period.
+            mass (astropy.units.quantity.Quantity): a quantity representing the exoplanet's mass.
 
         Attributes:
-            planet_name (String) : Name of the exoplanet.
-            io (numpy.ndarray) : 1D array representing data of the orbital inclination system.
-            radius (astropy.units.quantity.Quantity) : 1D array representing data of the exoplanet's radius.
-            vsini (astropy.units.quantity.Quantity) : 1D array representing data of the exoplanet's rotational velocity.
-            omega_o (numpy.ndarray) : 1D array representing data of the exoplanet's sky projected inclination.
-            period (astropy.units.quantity.Quantity) : a quantity representing the exoplanet's period.
-            mass (astropy.units.quantity.Quantity) : a quantity representing the exoplanet's mass.
-            velocity (numpy.ndarray) : 1D array representing data of the exoplanet's velocity computed with radius and period data.
-            v_lim (astropy.units.quantity.Quantity) : a quantity representing the velocity break limit of the exoplanet.
-            P_lim (astropy.units.quantity.Quantity) : a quantity representing the period break limit of the exoplanet.
-            lambda_ (numpy.ndarray) : 1D array representing data of the sky projected obliquity.
-            ip (numpy.ndarray) : 1D array representing data of the exoplanet's spin axis.
-            proj_obli (numpy.ndarray) : 1D array representing data of the exoplanet's projected obliquity.
-            true_obli (numpy.ndarray) : 1D array representing data of the exoplanet's true obliquity.
-            ip_pdf_saved (Plot) : a Plot that contains PDF data for spin axis
+            planet_name (String): Name of the exoplanet.
+            io (numpy.ndarray): 1D array representing data of the orbital inclination system.
+            radius (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet's radius.
+            vsini (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet's rotational velocity.
+            omega_o (numpy.ndarray): 1D array representing data of the exoplanet's sky projected inclination.
+            o_val (float): a float representing the value of the exoplanet's sky projected inclination.
+            omega_p (numpy.ndarray): 1D array representing data of the exoplanet's sky projected spin-axis.
+            period (astropy.units.quantity.Quantity): a quantity representing the exoplanet's period.
+            mass (astropy.units.quantity.Quantity): a quantity representing the exoplanet's mass.
+            velocity (numpy.ndarray): 1D array representing data of the exoplanet's velocity computed with radius and period data.
+            v_lim (astropy.units.quantity.Quantity): a quantity representing the velocity break limit of the exoplanet.
+            P_lim (astropy.units.quantity.Quantity): a quantity representing the period break limit of the exoplanet.
+            lambda_ (numpy.ndarray): 1D array representing data of the sky projected obliquity.
+            ip (numpy.ndarray): 1D array representing data of the exoplanet's spin axis.
+            proj_obli (numpy.ndarray): 1D array representing data of the exoplanet's projected obliquity.
+            true_obli (numpy.ndarray): 1D array representing data of the exoplanet's true obliquity.
+            ip_pdf_saved (Plot): a Plot that contains PDF data for spin axis
 
         """
 
@@ -70,9 +72,14 @@ class Exoplanet():
         self.io = io
 
         # Checking if omega_o is in rad or deg :
-        if omega_o[-1]<=np.pi:
-            omega_o=np.rad2deg(omega_o)
-        self.omega_o = omega_o
+        if isinstance(omega_o,float) or isinstance(omega_o,int):
+            self.o_val = omega_o
+            self.omega_o = None
+        else :
+            if omega_o[-1]<=np.pi:
+                omega_o=np.rad2deg(omega_o)
+            self.o_val = max(omega_o)
+            self.omega_o = omega_o
 
         # Setting units
         self.radius = radius * u.Rjup
@@ -97,15 +104,12 @@ class Exoplanet():
         self.P_lim = P_lim
 
         # Setting unknown parameters
+        self.omega_p = None
         self.lambda_ = None
-        
         self.ip = None
-
         self.proj_obli = None
-
         self.true_obli = None
-
-        self.ip_plot_saved = None
+        self.ip_pdf_saved = None
 
     ## Computing methods
 
@@ -116,10 +120,16 @@ class Exoplanet():
 
         P_sample = (self.period > self.P_lim)
         # Set vel and visini with P > P_limit condition and v < v_limit
-        self.vsini=self.vsini[P_sample]
-        self.velocity=self.velocity[P_sample]
+        self.vsini=self.vsini[self.vsini < self.v_lim]
+        self.velocity=self.velocity[self.velocity < self.v_lim]
+
+        velocity =np.random.choice(self.velocity,self.vsini.size)
+        self.velocity = velocity * u.km/u.s
+
         # Velocity limitation  due to centrifugal force and gravitationnal force
         v_sample= (self.vsini < self.velocity) 
+        print(self.velocity, self.velocity.size)
+        print(self.vsini, self.velocity.size)
 
         # Generate ip histogram
         sin_ip = self.vsini/self.velocity
@@ -143,10 +153,13 @@ class Exoplanet():
         """
         Compute the true obliquity data of the exoplanet
         """
-    
-        self.omega_o =np.random.choice(self.omega_o,self.ip.size)
-        omega_p = np.random.uniform(0, 180, self.ip.size)
-        self.lambda_ = omega_p 
+        if self.o_val!= None:
+            self.omega_o = np.random.normal(60,(90-self.o_val)/3,self.ip.size)
+        else : 
+            self.omega_o = np.random.choice(self.omega_o,self.ip.size)
+
+        self.omega_p = np.random.uniform(-90,90,self.ip.size)
+        self.lambda_ = self.omega_o-self.omega_p 
     
         true_obli = np.arccos(np.cos(np.deg2rad(self.ip))*np.cos(np.deg2rad(self.io))+np.sin(np.deg2rad(self.ip))*np.sin(np.deg2rad(self.io))*np.cos(np.deg2rad(self.lambda_)))
         true_obli = np.rad2deg(true_obli)
@@ -165,6 +178,7 @@ class Exoplanet():
                         'Radius',
                         'Rotational velocity',
                         'Sky projected inclination',
+                        'Sky projected spin axis',
                         'Sky projected obliquity',
                         'Spin axis',
                         'Project obliquity',
@@ -184,6 +198,7 @@ class Exoplanet():
             'Radius',
             'Rotational velocity',
             'Sky projected inclination',
+            'Sky projected spin axis',
             'Sky projected obliquity',
             'Spin axis',
             'Project obliquity',
@@ -233,6 +248,16 @@ class Exoplanet():
             plot = Plot('Histogram' , self.omega_o , None , xlabel , None , color_graph , title)
             return plot
 
+        elif arg=='Sky projected spin axis':
+            y, x, _ = plt.hist(self.omega_p, bins=bins, density=True)
+            plt.close()
+            x_max =  x[np.where(y == y.max())][0]
+            x_err    =  np.std(x_max)
+            title='Distribution - Sky projected spin axis  \n $\Omega_p$ = '+ (str(round(x_max,2)))+ '$\pm$'+ str(x_err) + ' °'
+            xlabel='Degree (°)'
+            plot = Plot('Histogram' , self.omega_p , None , xlabel , None , color_graph , title)
+            return plot
+
         elif arg=='Sky projected obliquity':
             y, x, _ = plt.hist(self.lambda_, bins=bins, density=True)
             plt.close()
@@ -240,8 +265,9 @@ class Exoplanet():
             x_err    =  np.std(x_max)
             title='Distribution - Sky projected obliquity  \n $\lambda$ = '+ (str(round(x_max,2)))+ '$\pm$'+ str(x_err) + ' °'
             xlabel='Degree (°)'
-            plot = Plot('Histogram' , self.omega_o , None , xlabel , None , color_graph , title)
+            plot = Plot('Histogram' , self.lambda_ , None , xlabel , None , color_graph , title)
             return plot
+
 
         elif arg=='Spin axis':
             y, x, _ = plt.hist(self.ip, bins=bins, density=True)
@@ -284,6 +310,7 @@ class Exoplanet():
                         'Radius',
                         'Rotational velocity',
                         'Sky projected inclination',
+                        'Sky projected spin axis',
                         'Sky projected obliquity',
                         'Spin axis - easy',
                         'Spin axis - complex',
@@ -306,6 +333,7 @@ class Exoplanet():
             'Radius',
             'Rotational velocity',
             'Sky projected inclination',
+            'Sky projected spin axis',
             'Sky projected obliquity',
             'Spin axis - easy',
             'Spin axis - complex',
@@ -349,16 +377,25 @@ class Exoplanet():
             return plot
 
         elif arg=='Sky projected inclination':
-            angles = np.linspace(0,180,n_easy)
+            angles = np.linspace(-90,90,n_easy)
             omega_o_pdf = pdf(kde(self.omega_o),angles)
             title = 'PDF - Sky projected inclination  \n $\Omega_o$ = '+ str(round(angles[np.argmax(omega_o_pdf)],2))+ ' °'
             xlabel = 'Degree (°)'
             ylabel = 'PDF'
             plot = Plot('PDF' , angles , omega_o_pdf , xlabel , ylabel , color_graph , title)
             return plot
+
+        elif arg=='Sky projected spin axis':
+            angles = np.linspace(-90,90,n_easy)
+            omega_o_pdf = pdf(kde(self.omega_p),angles)
+            title = 'PDF - Sky projected spin axis  \n $\Omega_p$ = '+ str(round(angles[np.argmax(omega_p_pdf)],2))+ ' °'
+            xlabel = 'Degree (°)'
+            ylabel = 'PDF'
+            plot = Plot('PDF' , angles , omega_p_pdf , xlabel , ylabel , color_graph , title)
+            return plot
     
         elif arg=='Sky projected obliquity':
-            angles = np.linspace(0,180,n_easy)
+            angles = np.linspace(-90,90,n_easy)
             lambda_pdf = pdf(kde(self.lambda_),angles)
             title = 'PDF - Sky projected obliquity  \n $\lambda$ = '+ str(round(angles[np.argmax(lambda_pdf)],2))+ ' °'
             xlabel = 'Degree (°)'
@@ -368,7 +405,7 @@ class Exoplanet():
 
         elif arg=='Spin axis - easy':
             n = self.ip.size
-            ip_half = self.ip[:n//2]
+            ip_half = self.ip[self.ip<=90]
             angles = np.linspace(0,90,n_easy//2)
             ip_pdf = pdf(kde(ip_half),angles)
             ip_pdf = np.concatenate((ip_pdf,ip_pdf[::-1]))
@@ -381,15 +418,22 @@ class Exoplanet():
 
         elif arg=='Spin axis - complex':
             angles = np.linspace(0,180,n_complex)
+            radius = np.random.normal(loc=1.87, scale=0.1, size=self.vsini.size) * u.Rjup
+            v = 2*np.pi*radius/self.period
+            v = v.to(u.km/u.s)
+
             v_range = np.linspace(0,self.v_lim.value,self.ip.size)                                                                                                             
-            ip_pdf = ip_complex_pdf(kde(self.velocity),kde(self.vsini),v_range,n_complex)
+            ip_pdf = ip_complex_pdf(kde(v),kde(self.vsini),v_range,n_complex)
             ## Plot
             title = 'PDF - Spin axis  \n $i_p$ = '+ str(round(angles[np.argmax(ip_pdf)],2))+ ' °'
             xlabel = 'Degree (°)'
             ylabel = 'PDF'
             plot = Plot('PDF' , angles , ip_pdf , xlabel , ylabel , color_graph , title)
+            print(ip_pdf)
+            plt.plot(angles,ip_pdf,color='lightblue',alpha=0.7)
             self.ip_pdf_saved = plot
             return plot
+
 
         elif arg=='Projected obliquity - easy':
             angles = np.linspace(0,180,n_easy)
@@ -400,9 +444,11 @@ class Exoplanet():
             plot = Plot('PDF' , angles , pro_obli_pdf , xlabel , ylabel , color_graph , title)
             return plot
 
-        elif arg=='Projected obliquity - complex': 
+        elif arg=='Projected obliquity - complex':
+            if self.ip_pdf_saved is None :  
+                ip_pdf_saved = self.pdf('Spin axis - complex')
             angles = self.ip_pdf_saved.x                                                                                                             
-            ip_pdf = self.ip_pdf_saved.y    
+            ip_pdf = self.ip_pdf_saved.y
             pro_obli_pdf = proj_obli_complex_pdf(kde(np.deg2rad(self.io)),ip_pdf,n_complex)
             ## Plot
             title = 'PDF - Projected obliquity  \n $|i_p-i_o|$ = '+ str(round(angles[np.argmax(pro_obli_pdf)],2))+ ' °'
@@ -427,7 +473,9 @@ class Exoplanet():
             angles = np.linspace(0,180,2*n_easy)     
             v_range = np.linspace(0,self.v_lim.value,self.ip.size)                                                                                                             
             
-            ip_pdf = self.ip_pdf_saved.y   
+            if self.ip_pdf_saved == None :  
+                self.ip_pdf_saved = self.pdf('Spin axis - complex')                                                                                                      
+            ip_pdf = self.ip_pdf_saved.y
             io_pdf = pdf(io_kde,angles)
             lambda_pdf = pdf(lambda_kde,angles)
 

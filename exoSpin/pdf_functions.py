@@ -250,6 +250,7 @@ def ip_complex_pdf(v_kde,vsini_kde,v_range,n):
     ### Normalization of ip
     angles = angles_rad*180/np.pi                                                           
     ip_pdf /= np.trapz(ip_pdf,angles)
+    print(ip_pdf)
     return ip_pdf
 
 def proj_obli_complex_pdf(io_kde,ip_pdf,n):
