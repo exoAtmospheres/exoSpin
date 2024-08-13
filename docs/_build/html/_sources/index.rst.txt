@@ -8,8 +8,8 @@
    <br />
 
 .. image:: logo.png
-   :width: 150px
-   :height: 105px
+   :width: 300px
+   :height: 210px
    :align: center
 
 exoSpin
@@ -22,6 +22,10 @@ exoSpin is a tool to measure the obliquities of planets beyond our solar system.
 .. toctree::
    :maxdepth: 2
    :caption: Contents
+
+   installation.rst
+   demo.rst
+   documentation.rst
 
 
 Version Track
