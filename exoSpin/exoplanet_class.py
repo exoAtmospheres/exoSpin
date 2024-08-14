@@ -29,9 +29,7 @@ from plot_class import Plot
 # --------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Exoplanet():
-
-    def __init__(self,planet_name, io, radius, vsini, omega_o, period, mass):
-        """
+    """
         Initialize every parameters for the Exoplanet class object.
 
         Args:
@@ -62,8 +60,9 @@ class Exoplanet():
             true_obli (numpy.ndarray): 1D array representing data of the exoplanet's true obliquity.
             ip_pdf_saved (Plot): a Plot that contains PDF data for spin axis
 
-        """
+    """
 
+    def __init__(self,planet_name, io, radius, vsini, omega_o, period, mass):
         self.planet_name = planet_name
 
         # Checking if io is in rad or deg :
@@ -172,18 +171,7 @@ class Exoplanet():
         Compute and save histogram plot of a exoplanet parameter.
 
         Args:
-            arg (String): a String that represents which histogram to plot.
-                        {
-                        'Orbital inclination',
-                        'Radius',
-                        'Rotational velocity',
-                        'Sky projected inclination',
-                        'Sky projected spin axis',
-                        'Sky projected obliquity',
-                        'Spin axis',
-                        'Project obliquity',
-                        'True obliquity'
-                        }
+            arg (String): a String that represents which histogram to plot. Possible values : {'Orbital inclination','Radius','Rotational velocity','Sky projected inclination','Sky projected spin axis','Sky projected obliquity','Spin axis','Project obliquity','True obliquity'}
             color_graph (String): a string to set the graph color.
 
         Returns:
@@ -304,21 +292,7 @@ class Exoplanet():
         Compute and save the PDF plot of a exoplanet parameter.
 
         Args:
-            arg (String): a String that represents which histogram to plot.
-                        {
-                        'Orbital inclination',
-                        'Radius',
-                        'Rotational velocity',
-                        'Sky projected inclination',
-                        'Sky projected spin axis',
-                        'Sky projected obliquity',
-                        'Spin axis - easy',
-                        'Spin axis - complex',
-                        'Projected obliquity - easy',
-                        'Projected obliquity - complex',
-                        'True obliquity - easy',
-                        'True obliquity - complex'
-                        }
+            arg (String): a String that represents which histogram to plot.{'Orbital inclination','Radius','Rotational velocity','Sky projected inclination','Sky projected spin axis','Sky projected obliquity','Spin axis - easy','Spin axis - complex','Projected obliquity - easy','Projected obliquity - complex','True obliquity - easy','True obliquity - complex'}
             color_graph (String): a string to set the graph color.
 
         Returns:
@@ -494,11 +468,7 @@ class Exoplanet():
         Plot the obliquity of the exoplanet.
 
         Args:
-            arg (String): a string that describe which histogram to plot.
-                        {
-                        'easy',
-                        'complex'
-                        }
+            arg (String): a string that describe which histogram to plot. Possible values : {'easy','complex'}
             color_graph (String): a string to set the graph color.
 
         Raises:

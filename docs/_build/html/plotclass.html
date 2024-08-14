@@ -51,7 +51,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="documentation.html">Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="exoplanetclass.html">Exoplanet Class</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Plotting Class</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-plot_class">The plotting module of exoSpin:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plot_class">The plotting module of exoSpin:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#plot_class.Plot"><code class="docutils literal notranslate"><span class="pre">Plot</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="obliquity.html">Obliquity function</a></li>
@@ -90,6 +93,203 @@
 <span id="the-plotting-module-of-exospin"></span><h2>The plotting module of exoSpin:<a class="headerlink" href="#module-plot_class" title="Link to this heading"></a></h2>
 <p>ExoSpin - Plot Class</p>
 <p>&#64;authors : I. Abdoulwahab &amp; P. Palma-Bifani &amp; G. Chauvin &amp; A. Simonnin</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plot_class.Plot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plot_class.</span></span><span class="sig-name descname"><span class="pre">Plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plot_class.Plot" title="Link to this definition"></a></dt>
+<dd><p>Initialize every parameters for the Plot class object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>String</em>) – a String representing the type of plot.</p></li>
+<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – 1D array representing x-values of the plot.</p></li>
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – 1D array representing y-values of the plot.</p></li>
+<li><p><strong>xlabel</strong> (<em>String</em>) – a String representing the label of the x-axis.</p></li>
+<li><p><strong>ylabel</strong> (<em>String</em>) – a String representing the label of the y-axis.</p></li>
+<li><p><strong>color</strong> (<em>String</em>) – a String representing the color of the plot.</p></li>
+<li><p><strong>title</strong> (<em>String</em>) – a String representing the titlte of the plot.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plot_class.Plot.type_">
+<span class="sig-name descname"><span class="pre">type_</span></span><a class="headerlink" href="#plot_class.Plot.type_" title="Link to this definition"></a></dt>
+<dd><p>a String representing the type of plot. Possible values : {‘Histogram’,’PDF’}</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plot_class.Plot.x">
+<span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#plot_class.Plot.x" title="Link to this definition"></a></dt>
+<dd><p>1D array representing x-values of the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plot_class.Plot.y">
+<span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#plot_class.Plot.y" title="Link to this definition"></a></dt>
+<dd><p>1D array representing y-values of the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plot_class.Plot.xlabel">
+<span class="sig-name descname"><span class="pre">xlabel</span></span><a class="headerlink" href="#plot_class.Plot.xlabel" title="Link to this definition"></a></dt>
+<dd><p>a String representing the label of the x-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plot_class.Plot.ylabel">
+<span class="sig-name descname"><span class="pre">ylabel</span></span><a class="headerlink" href="#plot_class.Plot.ylabel" title="Link to this definition"></a></dt>
+<dd><p>a String representing the label of the y-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plot_class.Plot.color">
+<span class="sig-name descname"><span class="pre">color</span></span><a class="headerlink" href="#plot_class.Plot.color" title="Link to this definition"></a></dt>
+<dd><p>a String representing the color of the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plot_class.Plot.title">
+<span class="sig-name descname"><span class="pre">title</span></span><a class="headerlink" href="#plot_class.Plot.title" title="Link to this definition"></a></dt>
+<dd><p>a String representing the titlte of the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plot_class.Plot.bins">
+<span class="sig-name descname"><span class="pre">bins</span></span><a class="headerlink" href="#plot_class.Plot.bins" title="Link to this definition"></a></dt>
+<dd><p>a integer that sets the histogram bins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_class.Plot.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plot_class.Plot.plot" title="Link to this definition"></a></dt>
+<dd><p>Show the plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_class.Plot.set_color">
+<span class="sig-name descname"><span class="pre">set_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_color</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plot_class.Plot.set_color" title="Link to this definition"></a></dt>
+<dd><p>Set a new color for the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_color</strong> (<em>String</em>) – a String that represents the new color for the plot.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If input and self attribute don’t have the same type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_class.Plot.set_title">
+<span class="sig-name descname"><span class="pre">set_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_title</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plot_class.Plot.set_title" title="Link to this definition"></a></dt>
+<dd><p>Set a new title for the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_color</strong> (<em>String</em>) – a String that represents the new title for the plot.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If input and self attribute don’t have the same type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_class.Plot.set_x">
+<span class="sig-name descname"><span class="pre">set_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plot_class.Plot.set_x" title="Link to this definition"></a></dt>
+<dd><p>Set a new x-axis for the plot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_x</strong> (<em>numpy.ndarray</em>) – 1D array that represents the new x-axis for the plot.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If input and self attribute don’t have the same type and length.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_class.Plot.set_xlabel">
+<span class="sig-name descname"><span class="pre">set_xlabel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plot_class.Plot.set_xlabel" title="Link to this definition"></a></dt>
+<dd><p>Set a new x-axis label for the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>label</strong> (<em>String</em>) – a String that represents the new label for the plot.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If input and self attribute don’t have the same type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_class.Plot.set_y">
+<span class="sig-name descname"><span class="pre">set_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plot_class.Plot.set_y" title="Link to this definition"></a></dt>
+<dd><p>Set a new y-axis for the plot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_y</strong> (<em>numpy.ndarray</em>) – 1D array that represents the new y-axis for the plot.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If input and self attribute don’t have the same type and length.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_class.Plot.set_ylabel">
+<span class="sig-name descname"><span class="pre">set_ylabel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plot_class.Plot.set_ylabel" title="Link to this definition"></a></dt>
+<dd><p>Set a new y-axis label for the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>label</strong> (<em>String</em>) – a String that represents the new label for the plot.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If input and self attribute don’t have the same type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 

@@ -50,7 +50,10 @@
 <li class="toctree-l1"><a class="reference internal" href="demo.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="documentation.html">Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Exoplanet Class</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-exoplanet_class">The exoplanet module of exoSpin:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-exoplanet_class">The exoplanet module of exoSpin:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#exoplanet_class.Exoplanet"><code class="docutils literal notranslate"><span class="pre">Exoplanet</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="plotclass.html">Plotting Class</a></li>
@@ -90,6 +93,320 @@
 <span id="the-exoplanet-module-of-exospin"></span><h2>The exoplanet module of exoSpin:<a class="headerlink" href="#module-exoplanet_class" title="Link to this heading"></a></h2>
 <p>ExoSpin - Exoplanet Class</p>
 <p>&#64;authors : I. Abdoulwahab &amp; P. Palma-Bifani &amp; G. Chauvin &amp; A. Simonnin</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">exoplanet_class.</span></span><span class="sig-name descname"><span class="pre">Exoplanet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">planet_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vsini</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega_o</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet" title="Link to this definition"></a></dt>
+<dd><p>Initialize every parameters for the Exoplanet class object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>planet_name</strong> (<em>String</em>) – Name of the exoplanet.</p></li>
+<li><p><strong>io</strong> (<em>numpy.ndarray</em>) – 1D array representing data of the orbital inclination system.</p></li>
+<li><p><strong>radius</strong> (<em>astropy.units.quantity.Quantity</em>) – 1D array representing data of the exoplanet’s radius.</p></li>
+<li><p><strong>vsini</strong> (<em>astropy.units.quantity.Quantity</em>) – 1D array representing data of the exoplanet’s rotational velocity.</p></li>
+<li><p><strong>omega_o</strong> (<em>numpy.ndarray</em>) – 1D array representing data of the exoplanet’s sky projected inclination.</p></li>
+<li><p><strong>period</strong> (<em>astropy.units.quantity.Quantity</em>) – a quantity representing the exoplanet’s period.</p></li>
+<li><p><strong>mass</strong> (<em>astropy.units.quantity.Quantity</em>) – a quantity representing the exoplanet’s mass.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.planet_name">
+<span class="sig-name descname"><span class="pre">planet_name</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.planet_name" title="Link to this definition"></a></dt>
+<dd><p>Name of the exoplanet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.io">
+<span class="sig-name descname"><span class="pre">io</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.io" title="Link to this definition"></a></dt>
+<dd><p>1D array representing data of the orbital inclination system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.radius">
+<span class="sig-name descname"><span class="pre">radius</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.radius" title="Link to this definition"></a></dt>
+<dd><p>1D array representing data of the exoplanet’s radius.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>astropy.units.quantity.Quantity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.vsini">
+<span class="sig-name descname"><span class="pre">vsini</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.vsini" title="Link to this definition"></a></dt>
+<dd><p>1D array representing data of the exoplanet’s rotational velocity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>astropy.units.quantity.Quantity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.omega_o">
+<span class="sig-name descname"><span class="pre">omega_o</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.omega_o" title="Link to this definition"></a></dt>
+<dd><p>1D array representing data of the exoplanet’s sky projected inclination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.o_val">
+<span class="sig-name descname"><span class="pre">o_val</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.o_val" title="Link to this definition"></a></dt>
+<dd><p>a float representing the value of the exoplanet’s sky projected inclination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.omega_p">
+<span class="sig-name descname"><span class="pre">omega_p</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.omega_p" title="Link to this definition"></a></dt>
+<dd><p>1D array representing data of the exoplanet’s sky projected spin-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.period">
+<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.period" title="Link to this definition"></a></dt>
+<dd><p>a quantity representing the exoplanet’s period.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>astropy.units.quantity.Quantity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.mass">
+<span class="sig-name descname"><span class="pre">mass</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.mass" title="Link to this definition"></a></dt>
+<dd><p>a quantity representing the exoplanet’s mass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>astropy.units.quantity.Quantity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.velocity">
+<span class="sig-name descname"><span class="pre">velocity</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.velocity" title="Link to this definition"></a></dt>
+<dd><p>1D array representing data of the exoplanet’s velocity computed with radius and period data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.v_lim">
+<span class="sig-name descname"><span class="pre">v_lim</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.v_lim" title="Link to this definition"></a></dt>
+<dd><p>a quantity representing the velocity break limit of the exoplanet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>astropy.units.quantity.Quantity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.P_lim">
+<span class="sig-name descname"><span class="pre">P_lim</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.P_lim" title="Link to this definition"></a></dt>
+<dd><p>a quantity representing the period break limit of the exoplanet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>astropy.units.quantity.Quantity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.lambda_">
+<span class="sig-name descname"><span class="pre">lambda_</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.lambda_" title="Link to this definition"></a></dt>
+<dd><p>1D array representing data of the sky projected obliquity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.ip">
+<span class="sig-name descname"><span class="pre">ip</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.ip" title="Link to this definition"></a></dt>
+<dd><p>1D array representing data of the exoplanet’s spin axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.proj_obli">
+<span class="sig-name descname"><span class="pre">proj_obli</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.proj_obli" title="Link to this definition"></a></dt>
+<dd><p>1D array representing data of the exoplanet’s projected obliquity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.true_obli">
+<span class="sig-name descname"><span class="pre">true_obli</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.true_obli" title="Link to this definition"></a></dt>
+<dd><p>1D array representing data of the exoplanet’s true obliquity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.ip_pdf_saved">
+<span class="sig-name descname"><span class="pre">ip_pdf_saved</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.ip_pdf_saved" title="Link to this definition"></a></dt>
+<dd><p>a Plot that contains PDF data for spin axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="plotclass.html#plot_class.Plot" title="plot_class.Plot">Plot</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.hist">
+<span class="sig-name descname"><span class="pre">hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_graph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.hist" title="Link to this definition"></a></dt>
+<dd><p>Compute and save histogram plot of a exoplanet parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arg</strong> (<em>String</em>) – a String that represents which histogram to plot. Possible values : {‘Orbital inclination’,’Radius’,’Rotational velocity’,’Sky projected inclination’,’Sky projected spin axis’,’Sky projected obliquity’,’Spin axis’,’Project obliquity’,’True obliquity’}</p></li>
+<li><p><strong>color_graph</strong> (<em>String</em>) – a string to set the graph color.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Plot object that has every important parameters of the histogram</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="plotclass.html#plot_class.Plot" title="plot_class.Plot">Plot</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>If the arg is not in the excepted values.</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.pdf">
+<span class="sig-name descname"><span class="pre">pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_graph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.pdf" title="Link to this definition"></a></dt>
+<dd><p>Compute and save the PDF plot of a exoplanet parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arg</strong> (<em>String</em>) – a String that represents which histogram to plot.{‘Orbital inclination’,’Radius’,’Rotational velocity’,’Sky projected inclination’,’Sky projected spin axis’,’Sky projected obliquity’,’Spin axis - easy’,’Spin axis - complex’,’Projected obliquity - easy’,’Projected obliquity - complex’,’True obliquity - easy’,’True obliquity - complex’}</p></li>
+<li><p><strong>color_graph</strong> (<em>String</em>) – a string to set the graph color.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Plot object that has every important parameters of the histogram</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="plotclass.html#plot_class.Plot" title="plot_class.Plot">Plot</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>If the arg is not in the excepted values.</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.plot_obli">
+<span class="sig-name descname"><span class="pre">plot_obli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.plot_obli" title="Link to this definition"></a></dt>
+<dd><p>Plot the obliquity of the exoplanet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arg</strong> (<em>String</em>) – a string that describe which histogram to plot. Possible values : {‘easy’,’complex’}</p></li>
+<li><p><strong>color_graph</strong> (<em>String</em>) – a string to set the graph color.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>If  arg is not in the excepted values</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.proj_obli_data">
+<span class="sig-name descname"><span class="pre">proj_obli_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.proj_obli_data" title="Link to this definition"></a></dt>
+<dd><p>Compute the projected obliquity data of the exoplanet</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.set_data">
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.set_data" title="Link to this definition"></a></dt>
+<dd><p>Set new data for an exoplanet parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arg</strong> (<em>String</em>) – a string that describe which histogram to plot.
+{
+‘Orbital inclination’,
+‘Radius’,
+‘Rotational velocity’,
+‘Sky projected inclination’,
+‘Sky projected spin-orbit’,
+‘Spin axis’,
+‘Project obliquity’,
+‘True obliquity’
+}</p></li>
+<li><p><strong>data</strong> – a input that contains the data to be set</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>If the arg is not in the excepted values and if data and self attributes don't have the same type</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.spin_axis_data">
+<span class="sig-name descname"><span class="pre">spin_axis_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.spin_axis_data" title="Link to this definition"></a></dt>
+<dd><p>Compute the spin axis data of the exoplanet</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.true_obli_data">
+<span class="sig-name descname"><span class="pre">true_obli_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.true_obli_data" title="Link to this definition"></a></dt>
+<dd><p>Compute the true obliquity data of the exoplanet</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 

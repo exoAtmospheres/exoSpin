@@ -3,7 +3,6 @@ ExoSpin - Plot Class
 
 
 @authors : I. Abdoulwahab & P. Palma-Bifani & G. Chauvin & A. Simonnin
-
 '''
 
 
@@ -20,17 +19,11 @@ import pickle
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Plot ():
-
-    def __init__(self , type_ , x , y , xlabel , ylabel , color , title):
-        """
+    """
         Initialize every parameters for the Plot class object.
 
         Args:
             type_ (String) : a String representing the type of plot.
-                            {
-                                'Histogram'
-                                'PDF'
-                            }
             x (numpy.ndarray) : 1D array representing x-values of the plot.
             y (numpy.ndarray) : 1D array representing y-values of the plot.
             xlabel (String) : a String representing the label of the x-axis.
@@ -39,11 +32,7 @@ class Plot ():
             title (String) : a String representing the titlte of the plot.
 
         Attributes:
-            type_ (String) : a String representing the type of plot.
-                            {
-                                'Histogram'
-                                'PDF'
-                            }
+            type_ (String) : a String representing the type of plot. Possible values : {'Histogram','PDF'}
             x (numpy.ndarray) : 1D array representing x-values of the plot.
             y (numpy.ndarray) : 1D array representing y-values of the plot.
             xlabel (String) : a String representing the label of the x-axis.
@@ -51,9 +40,9 @@ class Plot ():
             color (String) : a String representing the color of the plot.
             title (String) : a String representing the titlte of the plot.
             bins (int) : a integer that sets the histogram bins.
+    """
 
-        """
-
+    def __init__(self , type_ , x , y , xlabel , ylabel , color , title):
         self.type = type_
         self.x = x
         self.y = y
