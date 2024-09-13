@@ -1,9 +1,5 @@
 '''
 ExoSpin - Exoplanet Class
-
-
-@authors : I. Abdoulwahab & P. Palma-Bifani & G. Chauvin & A. Simonnin
-
 '''
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -23,8 +19,8 @@ from scipy.signal import savgol_filter
 from scipy.stats import gaussian_kde
 from scipy.stats import uniform
 
-from pdf_functions import *
-from plot_class import Plot
+from .pdf_functions import *
+from .plot_class import Plot
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -33,7 +29,7 @@ class Exoplanet():
         Initialize every parameters for the Exoplanet class object.
 
         Args:
-            planet_name (String): Name of the exoplanet.
+            planet_name (str): Name of the exoplanet.
             io (numpy.ndarray): 1D array representing data of the orbital inclination system.
             radius (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet's radius.
             vsini (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet's rotational velocity.
@@ -42,12 +38,11 @@ class Exoplanet():
             mass (astropy.units.quantity.Quantity): a quantity representing the exoplanet's mass.
 
         Attributes:
-            planet_name (String): Name of the exoplanet.
+            planet_name (str): Name of the exoplanet.
             io (numpy.ndarray): 1D array representing data of the orbital inclination system.
             radius (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet's radius.
             vsini (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet's rotational velocity.
             omega_o (numpy.ndarray): 1D array representing data of the exoplanet's sky projected inclination.
-            o_val (float): a float representing the value of the exoplanet's sky projected inclination.
             omega_p (numpy.ndarray): 1D array representing data of the exoplanet's sky projected spin-axis.
             period (astropy.units.quantity.Quantity): a quantity representing the exoplanet's period.
             mass (astropy.units.quantity.Quantity): a quantity representing the exoplanet's mass.
@@ -71,23 +66,19 @@ class Exoplanet():
         self.io = io
 
         # Checking if omega_o is in rad or deg :
-        if isinstance(omega_o,float) or isinstance(omega_o,int):
-            self.o_val = omega_o
-            self.omega_o = None
-        else :
-            if omega_o[-1]<=np.pi:
-                omega_o=np.rad2deg(omega_o)
-            self.o_val = max(omega_o)
-            self.omega_o = omega_o
+        # if omega_o[-1]<=np.pi:
+           # omega_o=np.rad2deg(omega_o)
+        self.omega_o = omega_o
 
         # Setting units
-        self.radius = radius * u.Rjup
 
         self.vsini = vsini * u.km/u.s
 
         self.mass = mass * u.Mjup
 
         self.period = period * u.hr
+
+        self.radius = radius * u.Rjup
 
         velocity = 2*np.pi*self.radius/self.period 
         velocity=velocity.to(u.km/u.s)
@@ -117,7 +108,7 @@ class Exoplanet():
         Compute the spin axis data of the exoplanet
         """
 
-        P_sample = (self.period > self.P_lim)
+        #P_sample = (self.period > self.P_lim)
         # Set vel and visini with P > P_limit condition and v < v_limit
         self.vsini=self.vsini[self.vsini < self.v_lim]
         self.velocity=self.velocity[self.velocity < self.v_lim]
@@ -127,8 +118,6 @@ class Exoplanet():
 
         # Velocity limitation  due to centrifugal force and gravitationnal force
         v_sample= (self.vsini < self.velocity) 
-        print(self.velocity, self.velocity.size)
-        print(self.vsini, self.velocity.size)
 
         # Generate ip histogram
         sin_ip = self.vsini/self.velocity
@@ -152,12 +141,8 @@ class Exoplanet():
         """
         Compute the true obliquity data of the exoplanet
         """
-        if self.o_val!= None:
-            self.omega_o = np.random.normal(60,(90-self.o_val)/3,self.ip.size)
-        else : 
-            self.omega_o = np.random.choice(self.omega_o,self.ip.size)
-
-        self.omega_p = np.random.uniform(-90,90,self.ip.size)
+        self.omega_o = np.random.choice(self.omega_o,self.ip.size)
+        self.omega_p = np.random.uniform(0,180,self.ip.size)
         self.lambda_ = self.omega_o-self.omega_p 
     
         true_obli = np.arccos(np.cos(np.deg2rad(self.ip))*np.cos(np.deg2rad(self.io))+np.sin(np.deg2rad(self.ip))*np.sin(np.deg2rad(self.io))*np.cos(np.deg2rad(self.lambda_)))
@@ -171,8 +156,8 @@ class Exoplanet():
         Compute and save histogram plot of a exoplanet parameter.
 
         Args:
-            arg (String): a String that represents which histogram to plot. Possible values : {'Orbital inclination','Radius','Rotational velocity','Sky projected inclination','Sky projected spin axis','Sky projected obliquity','Spin axis','Project obliquity','True obliquity'}
-            color_graph (String): a string to set the graph color.
+            arg (str): a string that represents which histogram to plot. Possible values : {'Orbital inclination','Radius','Rotational velocity','Sky projected inclination','Sky projected spin axis','Sky projected obliquity','Spin axis','Project obliquity','True obliquity'}
+            color_graph (str): a string to set the graph color.
 
         Returns:
             Plot : a Plot object that has every important parameters of the histogram 
@@ -292,8 +277,8 @@ class Exoplanet():
         Compute and save the PDF plot of a exoplanet parameter.
 
         Args:
-            arg (String): a String that represents which histogram to plot.{'Orbital inclination','Radius','Rotational velocity','Sky projected inclination','Sky projected spin axis','Sky projected obliquity','Spin axis - easy','Spin axis - complex','Projected obliquity - easy','Projected obliquity - complex','True obliquity - easy','True obliquity - complex'}
-            color_graph (String): a string to set the graph color.
+            arg (str): a string that represents which histogram to plot.{'Orbital inclination','Radius','Rotational velocity','Sky projected inclination','Sky projected spin axis','Sky projected obliquity','Spin axis - easy','Spin axis - complex','Projected obliquity - easy','Projected obliquity - complex','True obliquity - easy','True obliquity - complex'}
+            color_graph (str): a string to set the graph color.
 
         Returns:
             Plot : a Plot object that has every important parameters of the histogram 
@@ -391,22 +376,24 @@ class Exoplanet():
             return plot
 
         elif arg=='Spin axis - complex':
-            angles = np.linspace(0,180,n_complex)
-            radius = np.random.normal(loc=1.87, scale=0.1, size=self.vsini.size) * u.Rjup
-            v = 2*np.pi*radius/self.period
-            v = v.to(u.km/u.s)
+            if self.ip_pdf_saved is None:
+                angles = np.linspace(0,180,n_complex)
+                radius = np.random.normal(loc=1.87, scale=0.1, size=self.vsini.size) * u.Rjup
+                v = 2*np.pi*radius/self.period
+                v = v.to(u.km/u.s)
 
-            v_range = np.linspace(0,self.v_lim.value,self.ip.size)                                                                                                             
-            ip_pdf = ip_complex_pdf(kde(v),kde(self.vsini),v_range,n_complex)
-            ## Plot
-            title = 'PDF - Spin axis  \n $i_p$ = '+ str(round(angles[np.argmax(ip_pdf)],2))+ ' °'
-            xlabel = 'Degree (°)'
-            ylabel = 'PDF'
-            plot = Plot('PDF' , angles , ip_pdf , xlabel , ylabel , color_graph , title)
-            print(ip_pdf)
-            plt.plot(angles,ip_pdf,color='lightblue',alpha=0.7)
-            self.ip_pdf_saved = plot
-            return plot
+                v_range = np.linspace(0,self.v_lim.value,self.ip.size)                                                                                                             
+                ip_pdf = ip_complex_pdf(kde(v),kde(self.vsini),v_range,n_complex)
+                ## Plot
+                title = 'PDF - Spin axis  \n $i_p$ = '+ str(round(angles[np.argmax(ip_pdf)],2))+ ' °'
+                xlabel = 'Degree (°)'
+                ylabel = 'PDF'
+                plot = Plot('PDF' , angles , ip_pdf , xlabel , ylabel , color_graph , title)
+                plt.plot(angles,ip_pdf,color='lightblue',alpha=0.7)
+                self.ip_pdf_saved = plot
+                return plot
+            else:
+                return self.ip_pdf_saved
 
 
         elif arg=='Projected obliquity - easy':
@@ -468,8 +455,8 @@ class Exoplanet():
         Plot the obliquity of the exoplanet.
 
         Args:
-            arg (String): a string that describe which histogram to plot. Possible values : {'easy','complex'}
-            color_graph (String): a string to set the graph color.
+            arg (str): a string that describe which histogram to plot. Possible values : {'easy','complex'}
+            color_graph (str): a string to set the graph color.
 
         Raises:
             If  arg is not in the excepted values
@@ -624,7 +611,7 @@ class Exoplanet():
         Set new data for an exoplanet parameter. 
 
         Args:
-            arg (String): a string that describe which histogram to plot.
+            arg (str): a string that describe which histogram to plot.
                         {
                         'Orbital inclination',
                         'Radius',

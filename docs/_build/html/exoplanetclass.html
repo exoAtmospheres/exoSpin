@@ -18,6 +18,7 @@
         <script src="_static/documentation_options.js?v=2709fde1"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -57,6 +58,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="plotclass.html">Plotting Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pdf_functions.html">PDF Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="obliquity.html">Obliquity function</a></li>
 </ul>
 </li>
@@ -92,15 +94,14 @@
 <section id="module-exoplanet_class">
 <span id="the-exoplanet-module-of-exospin"></span><h2>The exoplanet module of exoSpin:<a class="headerlink" href="#module-exoplanet_class" title="Link to this heading"></a></h2>
 <p>ExoSpin - Exoplanet Class</p>
-<p>&#64;authors : I. Abdoulwahab &amp; P. Palma-Bifani &amp; G. Chauvin &amp; A. Simonnin</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="exoplanet_class.Exoplanet">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">exoplanet_class.</span></span><span class="sig-name descname"><span class="pre">Exoplanet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">planet_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vsini</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega_o</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">exoplanet_class.</span></span><span class="sig-name descname"><span class="pre">Exoplanet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">planet_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vsini</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega_o</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exoplanet_class.html#Exoplanet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exoplanet_class.Exoplanet" title="Link to this definition"></a></dt>
 <dd><p>Initialize every parameters for the Exoplanet class object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>planet_name</strong> (<em>String</em>) – Name of the exoplanet.</p></li>
+<li><p><strong>planet_name</strong> (<em>str</em>) – Name of the exoplanet.</p></li>
 <li><p><strong>io</strong> (<em>numpy.ndarray</em>) – 1D array representing data of the orbital inclination system.</p></li>
 <li><p><strong>radius</strong> (<em>astropy.units.quantity.Quantity</em>) – 1D array representing data of the exoplanet’s radius.</p></li>
 <li><p><strong>vsini</strong> (<em>astropy.units.quantity.Quantity</em>) – 1D array representing data of the exoplanet’s rotational velocity.</p></li>
@@ -116,7 +117,7 @@
 <dd><p>Name of the exoplanet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>String</p>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -161,17 +162,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="exoplanet_class.Exoplanet.o_val">
-<span class="sig-name descname"><span class="pre">o_val</span></span><a class="headerlink" href="#exoplanet_class.Exoplanet.o_val" title="Link to this definition"></a></dt>
-<dd><p>a float representing the value of the exoplanet’s sky projected inclination.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -299,13 +289,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="exoplanet_class.Exoplanet.hist">
-<span class="sig-name descname"><span class="pre">hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_graph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.hist" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_graph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exoplanet_class.html#Exoplanet.hist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exoplanet_class.Exoplanet.hist" title="Link to this definition"></a></dt>
 <dd><p>Compute and save histogram plot of a exoplanet parameter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>arg</strong> (<em>String</em>) – a String that represents which histogram to plot. Possible values : {‘Orbital inclination’,’Radius’,’Rotational velocity’,’Sky projected inclination’,’Sky projected spin axis’,’Sky projected obliquity’,’Spin axis’,’Project obliquity’,’True obliquity’}</p></li>
-<li><p><strong>color_graph</strong> (<em>String</em>) – a string to set the graph color.</p></li>
+<li><p><strong>arg</strong> (<em>str</em>) – a string that represents which histogram to plot. Possible values : {‘Orbital inclination’,’Radius’,’Rotational velocity’,’Sky projected inclination’,’Sky projected spin axis’,’Sky projected obliquity’,’Spin axis’,’Project obliquity’,’True obliquity’}</p></li>
+<li><p><strong>color_graph</strong> (<em>str</em>) – a string to set the graph color.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -322,13 +312,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="exoplanet_class.Exoplanet.pdf">
-<span class="sig-name descname"><span class="pre">pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_graph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.pdf" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_graph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exoplanet_class.html#Exoplanet.pdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exoplanet_class.Exoplanet.pdf" title="Link to this definition"></a></dt>
 <dd><p>Compute and save the PDF plot of a exoplanet parameter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>arg</strong> (<em>String</em>) – a String that represents which histogram to plot.{‘Orbital inclination’,’Radius’,’Rotational velocity’,’Sky projected inclination’,’Sky projected spin axis’,’Sky projected obliquity’,’Spin axis - easy’,’Spin axis - complex’,’Projected obliquity - easy’,’Projected obliquity - complex’,’True obliquity - easy’,’True obliquity - complex’}</p></li>
-<li><p><strong>color_graph</strong> (<em>String</em>) – a string to set the graph color.</p></li>
+<li><p><strong>arg</strong> (<em>str</em>) – a string that represents which histogram to plot.{‘Orbital inclination’,’Radius’,’Rotational velocity’,’Sky projected inclination’,’Sky projected spin axis’,’Sky projected obliquity’,’Spin axis - easy’,’Spin axis - complex’,’Projected obliquity - easy’,’Projected obliquity - complex’,’True obliquity - easy’,’True obliquity - complex’}</p></li>
+<li><p><strong>color_graph</strong> (<em>str</em>) – a string to set the graph color.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -345,13 +335,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="exoplanet_class.Exoplanet.plot_obli">
-<span class="sig-name descname"><span class="pre">plot_obli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.plot_obli" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_obli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exoplanet_class.html#Exoplanet.plot_obli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exoplanet_class.Exoplanet.plot_obli" title="Link to this definition"></a></dt>
 <dd><p>Plot the obliquity of the exoplanet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>arg</strong> (<em>String</em>) – a string that describe which histogram to plot. Possible values : {‘easy’,’complex’}</p></li>
-<li><p><strong>color_graph</strong> (<em>String</em>) – a string to set the graph color.</p></li>
+<li><p><strong>arg</strong> (<em>str</em>) – a string that describe which histogram to plot. Possible values : {‘easy’,’complex’}</p></li>
+<li><p><strong>color_graph</strong> (<em>str</em>) – a string to set the graph color.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -362,18 +352,18 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="exoplanet_class.Exoplanet.proj_obli_data">
-<span class="sig-name descname"><span class="pre">proj_obli_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.proj_obli_data" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">proj_obli_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/exoplanet_class.html#Exoplanet.proj_obli_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exoplanet_class.Exoplanet.proj_obli_data" title="Link to this definition"></a></dt>
 <dd><p>Compute the projected obliquity data of the exoplanet</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="exoplanet_class.Exoplanet.set_data">
-<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.set_data" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exoplanet_class.html#Exoplanet.set_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exoplanet_class.Exoplanet.set_data" title="Link to this definition"></a></dt>
 <dd><p>Set new data for an exoplanet parameter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>arg</strong> (<em>String</em>) – a string that describe which histogram to plot.
+<li><p><strong>arg</strong> (<em>str</em>) – a string that describe which histogram to plot.
 {
 ‘Orbital inclination’,
 ‘Radius’,
@@ -395,13 +385,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="exoplanet_class.Exoplanet.spin_axis_data">
-<span class="sig-name descname"><span class="pre">spin_axis_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.spin_axis_data" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">spin_axis_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/exoplanet_class.html#Exoplanet.spin_axis_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exoplanet_class.Exoplanet.spin_axis_data" title="Link to this definition"></a></dt>
 <dd><p>Compute the spin axis data of the exoplanet</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="exoplanet_class.Exoplanet.true_obli_data">
-<span class="sig-name descname"><span class="pre">true_obli_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#exoplanet_class.Exoplanet.true_obli_data" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">true_obli_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/exoplanet_class.html#Exoplanet.true_obli_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exoplanet_class.Exoplanet.true_obli_data" title="Link to this definition"></a></dt>
 <dd><p>Compute the true obliquity data of the exoplanet</p>
 </dd></dl>
 

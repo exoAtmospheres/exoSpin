@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>exoplanet_class &mdash; exoSpin 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=2709fde1"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            exoSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">exoSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">exoplanet_class</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for exoplanet_class</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">ExoSpin - Exoplanet Class</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1"># ------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="c1">## Imports</span>
+
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">glob</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="k">as</span> <span class="nn">patches</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">astropy.constants</span> <span class="k">as</span> <span class="nn">c</span>
+
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">savgol_filter</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gaussian_kde</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">uniform</span>
+
+<span class="kn">from</span> <span class="nn">pdf_functions</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">plot_class</span> <span class="kn">import</span> <span class="n">Plot</span>
+
+<span class="c1"># --------------------------------------------------------------------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Exoplanet">
+<a class="viewcode-back" href="../exoplanetclass.html#exoplanet_class.Exoplanet">[docs]</a>
+<span class="k">class</span> <span class="nc">Exoplanet</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize every parameters for the Exoplanet class object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            planet_name (str): Name of the exoplanet.</span>
+<span class="sd">            io (numpy.ndarray): 1D array representing data of the orbital inclination system.</span>
+<span class="sd">            radius (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet&#39;s radius.</span>
+<span class="sd">            vsini (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet&#39;s rotational velocity.</span>
+<span class="sd">            omega_o (numpy.ndarray): 1D array representing data of the exoplanet&#39;s sky projected inclination.</span>
+<span class="sd">            period (astropy.units.quantity.Quantity): a quantity representing the exoplanet&#39;s period.</span>
+<span class="sd">            mass (astropy.units.quantity.Quantity): a quantity representing the exoplanet&#39;s mass.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            planet_name (str): Name of the exoplanet.</span>
+<span class="sd">            io (numpy.ndarray): 1D array representing data of the orbital inclination system.</span>
+<span class="sd">            radius (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet&#39;s radius.</span>
+<span class="sd">            vsini (astropy.units.quantity.Quantity): 1D array representing data of the exoplanet&#39;s rotational velocity.</span>
+<span class="sd">            omega_o (numpy.ndarray): 1D array representing data of the exoplanet&#39;s sky projected inclination.</span>
+<span class="sd">            omega_p (numpy.ndarray): 1D array representing data of the exoplanet&#39;s sky projected spin-axis.</span>
+<span class="sd">            period (astropy.units.quantity.Quantity): a quantity representing the exoplanet&#39;s period.</span>
+<span class="sd">            mass (astropy.units.quantity.Quantity): a quantity representing the exoplanet&#39;s mass.</span>
+<span class="sd">            velocity (numpy.ndarray): 1D array representing data of the exoplanet&#39;s velocity computed with radius and period data.</span>
+<span class="sd">            v_lim (astropy.units.quantity.Quantity): a quantity representing the velocity break limit of the exoplanet.</span>
+<span class="sd">            P_lim (astropy.units.quantity.Quantity): a quantity representing the period break limit of the exoplanet.</span>
+<span class="sd">            lambda_ (numpy.ndarray): 1D array representing data of the sky projected obliquity.</span>
+<span class="sd">            ip (numpy.ndarray): 1D array representing data of the exoplanet&#39;s spin axis.</span>
+<span class="sd">            proj_obli (numpy.ndarray): 1D array representing data of the exoplanet&#39;s projected obliquity.</span>
+<span class="sd">            true_obli (numpy.ndarray): 1D array representing data of the exoplanet&#39;s true obliquity.</span>
+<span class="sd">            ip_pdf_saved (Plot): a Plot that contains PDF data for spin axis</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">planet_name</span><span class="p">,</span> <span class="n">io</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">vsini</span><span class="p">,</span> <span class="n">omega_o</span><span class="p">,</span> <span class="n">period</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">planet_name</span> <span class="o">=</span> <span class="n">planet_name</span>
+
+        <span class="c1"># Checking if io is in rad or deg :</span>
+        <span class="k">if</span> <span class="n">io</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">io</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">io</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="n">io</span>
+
+        <span class="c1"># Checking if omega_o is in rad or deg :</span>
+        <span class="c1"># if omega_o[-1]&lt;=np.pi:</span>
+           <span class="c1"># omega_o=np.rad2deg(omega_o)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">omega_o</span> <span class="o">=</span> <span class="n">omega_o</span>
+
+        <span class="c1"># Setting units</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vsini</span> <span class="o">=</span> <span class="n">vsini</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">km</span><span class="o">/</span><span class="n">u</span><span class="o">.</span><span class="n">s</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">mass</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Mjup</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">period</span> <span class="o">=</span> <span class="n">period</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">hr</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Rjup</span>
+
+        <span class="n">velocity</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">period</span> 
+        <span class="n">velocity</span><span class="o">=</span><span class="n">velocity</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">km</span><span class="o">/</span><span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">velocity</span>
+
+        <span class="c1"># Setting limits</span>
+        <span class="n">v_lim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+        <span class="n">v_lim</span> <span class="o">=</span> <span class="n">v_lim</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">km</span><span class="o">/</span><span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_lim</span> <span class="o">=</span> <span class="n">v_lim</span>
+        
+        <span class="n">P_lim</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">**</span><span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">))</span>
+        <span class="n">P_lim</span> <span class="o">=</span> <span class="n">P_lim</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">hr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">P_lim</span> <span class="o">=</span> <span class="n">P_lim</span>
+
+        <span class="c1"># Setting unknown parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">omega_p</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lambda_</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj_obli</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">true_obli</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip_pdf_saved</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">## Computing methods</span>
+
+<div class="viewcode-block" id="Exoplanet.spin_axis_data">
+<a class="viewcode-back" href="../exoplanetclass.html#exoplanet_class.Exoplanet.spin_axis_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">spin_axis_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the spin axis data of the exoplanet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#P_sample = (self.period &gt; self.P_lim)</span>
+        <span class="c1"># Set vel and visini with P &gt; P_limit condition and v &lt; v_limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vsini</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vsini</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">vsini</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_lim</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_lim</span><span class="p">]</span>
+
+        <span class="n">velocity</span> <span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">vsini</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">velocity</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">km</span><span class="o">/</span><span class="n">u</span><span class="o">.</span><span class="n">s</span>
+
+        <span class="c1"># Velocity limitation  due to centrifugal force and gravitationnal force</span>
+        <span class="n">v_sample</span><span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vsini</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span> 
+
+        <span class="c1"># Generate ip histogram</span>
+        <span class="n">sin_ip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vsini</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">sin_ip</span><span class="p">[</span><span class="n">v_sample</span><span class="p">])</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">ip</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">-</span><span class="n">ip</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Exoplanet.proj_obli_data">
+<a class="viewcode-back" href="../exoplanetclass.html#exoplanet_class.Exoplanet.proj_obli_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">proj_obli_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the projected obliquity data of the exoplanet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj_obli</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Exoplanet.true_obli_data">
+<a class="viewcode-back" href="../exoplanetclass.html#exoplanet_class.Exoplanet.true_obli_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">true_obli_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the true obliquity data of the exoplanet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">omega_o</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">omega_o</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">omega_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lambda_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega_o</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">omega_p</span> 
+    
+        <span class="n">true_obli</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">))</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">))</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">))</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">))</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lambda_</span><span class="p">)))</span>
+        <span class="n">true_obli</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">true_obli</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">true_obli</span> <span class="o">=</span> <span class="n">true_obli</span></div>
+
+
+    <span class="c1">## Plot methods</span>
+
+<div class="viewcode-block" id="Exoplanet.hist">
+<a class="viewcode-back" href="../exoplanetclass.html#exoplanet_class.Exoplanet.hist">[docs]</a>
+    <span class="k">def</span> <span class="nf">hist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arg</span><span class="p">,</span><span class="n">color_graph</span> <span class="o">=</span> <span class="s1">&#39;blue&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute and save histogram plot of a exoplanet parameter.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            arg (str): a string that represents which histogram to plot. Possible values : {&#39;Orbital inclination&#39;,&#39;Radius&#39;,&#39;Rotational velocity&#39;,&#39;Sky projected inclination&#39;,&#39;Sky projected spin axis&#39;,&#39;Sky projected obliquity&#39;,&#39;Spin axis&#39;,&#39;Project obliquity&#39;,&#39;True obliquity&#39;}</span>
+<span class="sd">            color_graph (str): a string to set the graph color.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Plot : a Plot object that has every important parameters of the histogram </span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            If the arg is not in the excepted values.    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span>
+            <span class="s1">&#39;Orbital inclination&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Radius&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Rotational velocity&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Sky projected inclination&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Sky projected spin axis&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Sky projected obliquity&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Spin axis&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Project obliquity&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;True obliquity&#39;</span>
+        <span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The arg value is not in the expected values&quot;</span><span class="p">)</span>
+                        
+        <span class="n">bins</span> <span class="o">=</span> <span class="mi">200</span>
+
+        <span class="k">if</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Orbital inclination&#39;</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">x_max</span> <span class="o">=</span>  <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">x_err</span>    <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution - Orbital inclination  </span><span class="se">\n</span><span class="s1"> $i_o$ = &#39;</span><span class="o">+</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span><span class="o">+</span> <span class="s1">&#39;$\pm$&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_err</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Histogram&#39;</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Radius&#39;</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">x_max</span> <span class="o">=</span>  <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">x_err</span>    <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution - Radius  </span><span class="se">\n</span><span class="s1"> $R$ = &#39;</span><span class="o">+</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span><span class="o">+</span> <span class="s1">&#39;$\pm$&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_err</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; $R_</span><span class="si">{Jup}</span><span class="s1">$&#39;</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Length ($R_</span><span class="si">{Jup}</span><span class="s1">$)&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Histogram&#39;</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Rotational velocity&#39;</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vsini</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">x_max</span> <span class="o">=</span>  <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">x_err</span>    <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution - Rotation velocity  </span><span class="se">\n</span><span class="s1"> $</span><span class="se">\\</span><span class="s1">nu sin (i_p)$ = &#39;</span><span class="o">+</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span><span class="o">+</span> <span class="s1">&#39;$\pm$&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_err</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; $km.s^{-1}$&#39;</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Velocity ($km.s^{-1}$)&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Histogram&#39;</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vsini</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Sky projected inclination&#39;</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">omega_o</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">x_max</span> <span class="o">=</span>  <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">x_err</span>    <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution - Sky projected inclination  </span><span class="se">\n</span><span class="s1"> $\Omega_o$ = &#39;</span><span class="o">+</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span><span class="o">+</span> <span class="s1">&#39;$\pm$&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_err</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Histogram&#39;</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega_o</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Sky projected spin axis&#39;</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">omega_p</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">x_max</span> <span class="o">=</span>  <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">x_err</span>    <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution - Sky projected spin axis  </span><span class="se">\n</span><span class="s1"> $\Omega_p$ = &#39;</span><span class="o">+</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span><span class="o">+</span> <span class="s1">&#39;$\pm$&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_err</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Histogram&#39;</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega_p</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Sky projected obliquity&#39;</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lambda_</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">x_max</span> <span class="o">=</span>  <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">x_err</span>    <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution - Sky projected obliquity  </span><span class="se">\n</span><span class="s1"> $\lambda$ = &#39;</span><span class="o">+</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span><span class="o">+</span> <span class="s1">&#39;$\pm$&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_err</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Histogram&#39;</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambda_</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Spin axis&#39;</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">x_max</span> <span class="o">=</span>  <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">x_err</span>    <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution - Spin axis  </span><span class="se">\n</span><span class="s1"> $\i_p$ = &#39;</span><span class="o">+</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span><span class="o">+</span> <span class="s1">&#39;$\pm$&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_err</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Histogram&#39;</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Projected obliquity&#39;</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj_obli</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">x_max</span> <span class="o">=</span>  <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">x_err</span>    <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution - Projected obliquity  </span><span class="se">\n</span><span class="s1"> $|i_p-i_o|$ = &#39;</span><span class="o">+</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span><span class="o">+</span> <span class="s1">&#39;$\pm$&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_err</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Histogram&#39;</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj_obli</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;True obliquity&#39;</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">true_obli</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">x_max</span> <span class="o">=</span>  <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">x_err</span>    <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution - True obliquity  </span><span class="se">\n</span><span class="s1"> $\Psi_</span><span class="si">{op}</span><span class="s1">$ = &#39;</span><span class="o">+</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span><span class="o">+</span> <span class="s1">&#39;$\pm$&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_err</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Histogram&#39;</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega_o</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span></div>
+
+
+<div class="viewcode-block" id="Exoplanet.pdf">
+<a class="viewcode-back" href="../exoplanetclass.html#exoplanet_class.Exoplanet.pdf">[docs]</a>
+    <span class="k">def</span> <span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arg</span><span class="p">,</span><span class="n">color_graph</span> <span class="o">=</span> <span class="s1">&#39;blue&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute and save the PDF plot of a exoplanet parameter.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            arg (str): a string that represents which histogram to plot.{&#39;Orbital inclination&#39;,&#39;Radius&#39;,&#39;Rotational velocity&#39;,&#39;Sky projected inclination&#39;,&#39;Sky projected spin axis&#39;,&#39;Sky projected obliquity&#39;,&#39;Spin axis - easy&#39;,&#39;Spin axis - complex&#39;,&#39;Projected obliquity - easy&#39;,&#39;Projected obliquity - complex&#39;,&#39;True obliquity - easy&#39;,&#39;True obliquity - complex&#39;}</span>
+<span class="sd">            color_graph (str): a string to set the graph color.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Plot : a Plot object that has every important parameters of the histogram </span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            If the arg is not in the excepted values.    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span>
+            <span class="s1">&#39;Orbital inclination&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Radius&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Rotational velocity&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Sky projected inclination&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Sky projected spin axis&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Sky projected obliquity&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Spin axis - easy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Spin axis - complex&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Projected obliquity - easy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Projected obliquity - complex&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;True obliquity - easy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;True obliquity - complex&#39;</span><span class="p">,</span>
+        <span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The arg value is not in the expected values&quot;</span><span class="p">)</span>
+               
+        <span class="n">n_easy</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="n">n_complex</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="k">if</span> <span class="n">color_graph</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">color_graph</span> <span class="o">=</span> <span class="s1">&#39;#74D0F1&#39;</span>
+
+        <span class="k">if</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Orbital inclination&#39;</span><span class="p">:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="n">n_easy</span><span class="p">)</span>
+            <span class="n">io_pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">(</span><span class="n">kde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">),</span><span class="n">angles</span><span class="p">)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - Orbital inclination  </span><span class="se">\n</span><span class="s1"> $i_p$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">io_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">angles</span> <span class="p">,</span> <span class="n">io_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Radius&#39;</span><span class="p">:</span>
+            <span class="n">meters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">n_easy</span><span class="p">)</span>
+            <span class="n">radius_pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">(</span><span class="n">kde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">value</span><span class="p">),</span><span class="n">meters</span><span class="p">)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - Radius  </span><span class="se">\n</span><span class="s1"> $R$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">meters</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">radius_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; $R_</span><span class="si">{Jup}</span><span class="s1">$&#39;</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Length ($R_</span><span class="si">{Jup}</span><span class="s1">$)&#39;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">meters</span> <span class="p">,</span> <span class="n">radius_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Rotational velocity&#39;</span><span class="p">:</span>
+            <span class="n">velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">v_lim</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">n_easy</span><span class="p">)</span>
+            <span class="n">vsini_pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">(</span><span class="n">kde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vsini</span><span class="o">.</span><span class="n">value</span><span class="p">),</span><span class="n">velocities</span><span class="p">)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - Rotational velocity  </span><span class="se">\n</span><span class="s1"> $</span><span class="se">\\</span><span class="s1">nu sin (i_p)$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">velocities</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">vsini_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; $km.s^{-1}$&#39;</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Velocity ($km.s^{-1}$)&#39;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">velocities</span> <span class="p">,</span> <span class="n">vsini_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Sky projected inclination&#39;</span><span class="p">:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="n">n_easy</span><span class="p">)</span>
+            <span class="n">omega_o_pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">(</span><span class="n">kde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">omega_o</span><span class="p">),</span><span class="n">angles</span><span class="p">)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - Sky projected inclination  </span><span class="se">\n</span><span class="s1"> $\Omega_o$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">omega_o_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">angles</span> <span class="p">,</span> <span class="n">omega_o_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Sky projected spin axis&#39;</span><span class="p">:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="n">n_easy</span><span class="p">)</span>
+            <span class="n">omega_o_pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">(</span><span class="n">kde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">omega_p</span><span class="p">),</span><span class="n">angles</span><span class="p">)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - Sky projected spin axis  </span><span class="se">\n</span><span class="s1"> $\Omega_p$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">omega_p_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">angles</span> <span class="p">,</span> <span class="n">omega_p_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+    
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Sky projected obliquity&#39;</span><span class="p">:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="n">n_easy</span><span class="p">)</span>
+            <span class="n">lambda_pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">(</span><span class="n">kde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lambda_</span><span class="p">),</span><span class="n">angles</span><span class="p">)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - Sky projected obliquity  </span><span class="se">\n</span><span class="s1"> $\lambda$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">lambda_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">angles</span> <span class="p">,</span> <span class="n">lambda_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Spin axis - easy&#39;</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">ip_half</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">&lt;=</span><span class="mi">90</span><span class="p">]</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="n">n_easy</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">ip_pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">(</span><span class="n">kde</span><span class="p">(</span><span class="n">ip_half</span><span class="p">),</span><span class="n">angles</span><span class="p">)</span>
+            <span class="n">ip_pdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">ip_pdf</span><span class="p">,</span><span class="n">ip_pdf</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">new_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="n">n_easy</span><span class="p">)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - Spin axis  </span><span class="se">\n</span><span class="s1"> $i_p$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ip_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">new_angles</span> <span class="p">,</span> <span class="n">ip_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Spin axis - complex&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip_pdf_saved</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="n">n_complex</span><span class="p">)</span>
+                <span class="n">radius</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mf">1.87</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vsini</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Rjup</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">radius</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">period</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">km</span><span class="o">/</span><span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+
+                <span class="n">v_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">v_lim</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>                                                                                                             
+                <span class="n">ip_pdf</span> <span class="o">=</span> <span class="n">ip_complex_pdf</span><span class="p">(</span><span class="n">kde</span><span class="p">(</span><span class="n">v</span><span class="p">),</span><span class="n">kde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vsini</span><span class="p">),</span><span class="n">v_range</span><span class="p">,</span><span class="n">n_complex</span><span class="p">)</span>
+                <span class="c1">## Plot</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - Spin axis  </span><span class="se">\n</span><span class="s1"> $i_p$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ip_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+                <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Degree (°)&#39;</span>
+                <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+                <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">angles</span> <span class="p">,</span> <span class="n">ip_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span><span class="n">ip_pdf</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightblue&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ip_pdf_saved</span> <span class="o">=</span> <span class="n">plot</span>
+                <span class="k">return</span> <span class="n">plot</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip_pdf_saved</span>
+
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Projected obliquity - easy&#39;</span><span class="p">:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="n">n_easy</span><span class="p">)</span>
+            <span class="n">pro_obli_pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">(</span><span class="n">kde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj_obli</span><span class="p">),</span><span class="n">angles</span><span class="p">)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - Projected obliquity  </span><span class="se">\n</span><span class="s1"> $|i_p-i_o|$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">pro_obli_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">angles</span> <span class="p">,</span> <span class="n">pro_obli_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Projected obliquity - complex&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip_pdf_saved</span> <span class="ow">is</span> <span class="kc">None</span> <span class="p">:</span>  
+                <span class="n">ip_pdf_saved</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="s1">&#39;Spin axis - complex&#39;</span><span class="p">)</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip_pdf_saved</span><span class="o">.</span><span class="n">x</span>                                                                                                             
+            <span class="n">ip_pdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip_pdf_saved</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">pro_obli_pdf</span> <span class="o">=</span> <span class="n">proj_obli_complex_pdf</span><span class="p">(</span><span class="n">kde</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">)),</span><span class="n">ip_pdf</span><span class="p">,</span><span class="n">n_complex</span><span class="p">)</span>
+            <span class="c1">## Plot</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - Projected obliquity  </span><span class="se">\n</span><span class="s1"> $|i_p-i_o|$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">pro_obli_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">angles</span> <span class="p">,</span> <span class="n">pro_obli_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;True obliquity - easy&#39;</span><span class="p">:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="n">n_easy</span><span class="p">)</span>
+            <span class="n">true_obli_pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">(</span><span class="n">kde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">true_obli</span><span class="p">),</span><span class="n">angles</span><span class="p">)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - True obliquity  </span><span class="se">\n</span><span class="s1"> $\Psi_</span><span class="si">{op}</span><span class="s1">$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">true_obli_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">angles</span> <span class="p">,</span> <span class="n">true_obli_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;True obliquity - complex&#39;</span><span class="p">:</span> 
+
+            <span class="n">io_kde</span> <span class="o">=</span> <span class="n">kde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">)</span>
+            <span class="n">lambda_kde</span> <span class="o">=</span> <span class="n">kde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lambda_</span><span class="p">)</span> 
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">n_easy</span><span class="p">)</span>     
+            <span class="n">v_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">v_lim</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>                                                                                                             
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip_pdf_saved</span> <span class="o">==</span> <span class="kc">None</span> <span class="p">:</span>  
+                <span class="bp">self</span><span class="o">.</span><span class="n">ip_pdf_saved</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="s1">&#39;Spin axis - complex&#39;</span><span class="p">)</span>                                                                                                      
+            <span class="n">ip_pdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip_pdf_saved</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">io_pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">(</span><span class="n">io_kde</span><span class="p">,</span><span class="n">angles</span><span class="p">)</span>
+            <span class="n">lambda_pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">(</span><span class="n">lambda_kde</span><span class="p">,</span><span class="n">angles</span><span class="p">)</span>
+
+            <span class="n">angles_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="n">n_complex</span><span class="p">)</span>
+
+            <span class="n">true_obli_pdf</span> <span class="o">=</span> <span class="n">true_obli_complex_pdf</span><span class="p">(</span><span class="n">io_pdf</span><span class="p">,</span><span class="n">ip_pdf</span><span class="p">,</span><span class="n">lambda_pdf</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">n_easy</span><span class="p">)</span>
+            <span class="c1">## Plot</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;PDF - True obliquity  </span><span class="se">\n</span><span class="s1"> $\Psi_</span><span class="si">{op}</span><span class="s1">$ = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">true_obli_pdf</span><span class="p">)],</span><span class="mi">2</span><span class="p">))</span><span class="o">+</span> <span class="s1">&#39; °&#39;</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Degree (°)&#39;</span>
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;PDF&#39;</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;PDF&#39;</span> <span class="p">,</span> <span class="n">angles</span> <span class="p">,</span> <span class="n">true_obli_pdf</span> <span class="p">,</span> <span class="n">xlabel</span> <span class="p">,</span> <span class="n">ylabel</span> <span class="p">,</span> <span class="n">color_graph</span> <span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plot</span></div>
+
+
+<div class="viewcode-block" id="Exoplanet.plot_obli">
+<a class="viewcode-back" href="../exoplanetclass.html#exoplanet_class.Exoplanet.plot_obli">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_obli</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the obliquity of the exoplanet.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            arg (str): a string that describe which histogram to plot. Possible values : {&#39;easy&#39;,&#39;complex&#39;}</span>
+<span class="sd">            color_graph (str): a string to set the graph color.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            If  arg is not in the excepted values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span>
+            <span class="s1">&#39;easy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;complex&#39;</span>
+        <span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The arg value is not in the expected values&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">arg</span> <span class="o">==</span> <span class="s1">&#39;easy&#39;</span><span class="p">:</span>
+
+            <span class="n">io_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="s1">&#39;Orbital inclination&#39;</span><span class="p">,</span><span class="s1">&#39;#000099&#39;</span><span class="p">)</span>
+            <span class="n">ip_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="s1">&#39;Spin axis - easy&#39;</span><span class="p">,</span><span class="s1">&#39;#E73E01&#39;</span><span class="p">)</span>
+            <span class="n">proj_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="s1">&#39;Projected obliquity - easy&#39;</span><span class="p">,</span><span class="s1">&#39;#A100A1&#39;</span><span class="p">)</span>
+            <span class="n">true_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="s1">&#39;True obliquity - easy&#39;</span><span class="p">,</span><span class="s1">&#39;#87E990&#39;</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Plot - Obliquity of &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">planet_name</span><span class="p">)</span>
+
+            <span class="n">fig_final</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">io_plot</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">io_plot</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">io_plot</span><span class="o">.</span><span class="n">color</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$i_o$&#39;</span><span class="p">)</span>
+
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">io_plot</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Orbital inclination and companion spin axis&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">)</span>
+
+            <span class="n">axs2</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">color</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$i_p$&#39;</span><span class="p">)</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">io_plot</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">)</span>
+
+            <span class="n">lines_1</span><span class="p">,</span> <span class="n">labels_1</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+            <span class="n">lines_2</span><span class="p">,</span> <span class="n">labels_2</span> <span class="o">=</span> <span class="n">axs2</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">lines_1</span> <span class="o">+</span> <span class="n">lines_2</span><span class="p">,</span> <span class="n">labels_1</span> <span class="o">+</span> <span class="n">labels_2</span><span class="p">)</span>
+
+            <span class="c1">#Diagram</span>
+            <span class="n">star</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="mf">0.07</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ffd319&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;#bb6f1e&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">planet_name</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">s star&#39;</span><span class="p">)</span>
+            <span class="n">orbit</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Ellipse</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span> <span class="mf">0.70</span><span class="p">,</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span>
+            <span class="n">exoplanet</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mf">0.85</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;#c3dbff&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;#133984&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">planet_name</span><span class="p">)</span>
+
+            <span class="n">ip_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">x</span><span class="p">)])</span>
+
+            <span class="c1"># Define the spin axis line</span>
+
+            <span class="n">spin_line</span> <span class="o">=</span> <span class="mf">0.05</span>
+            <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">spin_line</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ip_max</span><span class="p">)</span>
+            <span class="n">y1</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">spin_line</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ip_max</span><span class="p">)</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">-</span> <span class="n">spin_line</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ip_max</span><span class="p">)</span>
+            <span class="n">y2</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">-</span> <span class="n">spin_line</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ip_max</span><span class="p">)</span>
+
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Diagram of &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">planet_name</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">s system&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">star</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">orbit</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">exoplanet</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x2</span><span class="p">,</span> <span class="n">x1</span><span class="p">],</span> <span class="p">[</span><span class="n">y2</span><span class="p">,</span> <span class="n">y1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Spin Axis&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">proj_plot</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">proj_plot</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">proj_plot</span><span class="o">.</span><span class="n">color</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$|i_p-i_o|$&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Projected obliquity&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Degree (°)&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">true_plot</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">true_plot</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">true_plot</span><span class="o">.</span><span class="n">color</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$\Psi_</span><span class="si">{op}</span><span class="s1">$&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;True obliquity&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Degree (°)&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">arg</span> <span class="o">==</span> <span class="s1">&#39;complex&#39;</span><span class="p">:</span>
+
+            <span class="n">io_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="s1">&#39;Orbital inclination&#39;</span><span class="p">,</span><span class="s1">&#39;#000099&#39;</span><span class="p">)</span>
+            <span class="n">ip_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="s1">&#39;Spin axis - complex&#39;</span><span class="p">,</span><span class="s1">&#39;#E73E01&#39;</span><span class="p">)</span>
+            <span class="n">proj_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="s1">&#39;Projected obliquity - complex&#39;</span><span class="p">,</span><span class="s1">&#39;#A100A1&#39;</span><span class="p">)</span>
+            <span class="n">true_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="s1">&#39;True obliquity - complex&#39;</span><span class="p">,</span><span class="s1">&#39;#87E990&#39;</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Plot - Obliquity of &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">planet_name</span><span class="p">)</span>
+
+            <span class="n">fig_final</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">io_plot</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">io_plot</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">io_plot</span><span class="o">.</span><span class="n">color</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$i_o$&#39;</span><span class="p">)</span>
+
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">io_plot</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Orbital inclination and companion spin axis&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">)</span>
+
+            <span class="n">axs2</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">color</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$i_p$&#39;</span><span class="p">)</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">io_plot</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">)</span>
+
+            <span class="n">lines_1</span><span class="p">,</span> <span class="n">labels_1</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+            <span class="n">lines_2</span><span class="p">,</span> <span class="n">labels_2</span> <span class="o">=</span> <span class="n">axs2</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+            <span class="n">axs2</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">lines_1</span> <span class="o">+</span> <span class="n">lines_2</span><span class="p">,</span> <span class="n">labels_1</span> <span class="o">+</span> <span class="n">labels_2</span><span class="p">)</span>
+
+            <span class="c1">#Diagram</span>
+            <span class="n">star</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="mf">0.07</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ffd319&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;#bb6f1e&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">planet_name</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">s star&#39;</span><span class="p">)</span>
+            <span class="n">orbit</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Ellipse</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span> <span class="mf">0.70</span><span class="p">,</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span>
+            <span class="n">exoplanet</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mf">0.85</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;#c3dbff&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;#133984&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">planet_name</span><span class="p">)</span>
+
+            <span class="n">ip_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">x</span><span class="p">)])</span>
+
+            <span class="c1"># Define the spin axis line</span>
+
+            <span class="n">spin_line</span> <span class="o">=</span> <span class="mf">0.05</span>
+            <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">spin_line</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ip_max</span><span class="p">)</span>
+            <span class="n">y1</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">spin_line</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ip_max</span><span class="p">)</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">-</span> <span class="n">spin_line</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ip_max</span><span class="p">)</span>
+            <span class="n">y2</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">-</span> <span class="n">spin_line</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ip_max</span><span class="p">)</span>
+
+
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Diagram of &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">planet_name</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">s system&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">star</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">orbit</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">exoplanet</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x2</span><span class="p">,</span> <span class="n">x1</span><span class="p">],</span> <span class="p">[</span><span class="n">y2</span><span class="p">,</span> <span class="n">y1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">ip_plot</span><span class="o">.</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Spin Axis&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">proj_plot</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">proj_plot</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">proj_plot</span><span class="o">.</span><span class="n">color</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$|i_p-i_o|$&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Projected obliquity&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;PDF&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Degree (°)&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">true_plot</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">true_plot</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">true_plot</span><span class="o">.</span><span class="n">color</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$\Psi_</span><span class="si">{op}</span><span class="s1">$&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;True obliquity&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Degree (°)&#39;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+    <span class="c1">## Set method</span>
+
+<div class="viewcode-block" id="Exoplanet.set_data">
+<a class="viewcode-back" href="../exoplanetclass.html#exoplanet_class.Exoplanet.set_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arg</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set new data for an exoplanet parameter. </span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            arg (str): a string that describe which histogram to plot.</span>
+<span class="sd">                        {</span>
+<span class="sd">                        &#39;Orbital inclination&#39;,</span>
+<span class="sd">                        &#39;Radius&#39;,</span>
+<span class="sd">                        &#39;Rotational velocity&#39;,</span>
+<span class="sd">                        &#39;Sky projected inclination&#39;,</span>
+<span class="sd">                        &#39;Sky projected spin-orbit&#39;,</span>
+<span class="sd">                        &#39;Spin axis&#39;,</span>
+<span class="sd">                        &#39;Project obliquity&#39;,</span>
+<span class="sd">                        &#39;True obliquity&#39;</span>
+<span class="sd">                        }</span>
+<span class="sd">            data: a input that contains the data to be set</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            If the arg is not in the excepted values and if data and self attributes don&#39;t have the same type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span>
+            <span class="s1">&#39;Orbital inclination&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Radius&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Rotational velocity&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Sky projected inclination&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Sky projected obliquity&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Mass&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Period&#39;</span>
+            <span class="s1">&#39;Planet name&#39;</span>
+
+        <span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The arg value is not in the expected values&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Orbital inclination&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">)</span><span class="o">==</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">else</span> <span class="p">:</span> 
+               <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data input and self attribute don&#39;t have the same type&quot;</span><span class="p">)</span> 
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Rotational velocity&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vsini</span><span class="p">)</span><span class="o">==</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">vsini</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">else</span> <span class="p">:</span> 
+               <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data input and self attribute don&#39;t have the same type&quot;</span><span class="p">)</span> 
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Radius&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span><span class="o">==</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">else</span> <span class="p">:</span> 
+               <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data input and self attribute don&#39;t have the same type&quot;</span><span class="p">)</span> 
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Sky projected inclination&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">omega_o</span><span class="p">)</span><span class="o">==</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">omega_o</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">else</span> <span class="p">:</span> 
+               <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data input and self attribute don&#39;t have the same type&quot;</span><span class="p">)</span> 
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Mass&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span><span class="o">==</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">else</span> <span class="p">:</span> 
+               <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data input and self attribute don&#39;t have the same type&quot;</span><span class="p">)</span> 
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Period&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="p">)</span><span class="o">==</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">period</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">else</span> <span class="p">:</span> 
+               <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data input and self attribute don&#39;t have the same type&quot;</span><span class="p">)</span> 
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;Planet name&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plna</span><span class="p">)</span><span class="o">==</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">planet_name</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">else</span> <span class="p">:</span> 
+               <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data input and self attribute don&#39;t have the same type&quot;</span><span class="p">)</span> </div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Idriss Abdoulwahab &amp; Paulina Palma-Bifani.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

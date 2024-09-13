@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF Functions &mdash; exoSpin 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Obliquity function" href="obliquity.html" />
+    <link rel="prev" title="Plotting Class" href="plotclass.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            exoSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="documentation.html">Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="exoplanetclass.html">Exoplanet Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotclass.html">Plotting Class</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PDF Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-pdf_functions">PDF fuctions for exoSpin :</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pdf_functions.ip_complex_pdf"><code class="docutils literal notranslate"><span class="pre">ip_complex_pdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pdf_functions.kde"><code class="docutils literal notranslate"><span class="pre">kde()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pdf_functions.pdf"><code class="docutils literal notranslate"><span class="pre">pdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pdf_functions.proj_obli_complex_pdf"><code class="docutils literal notranslate"><span class="pre">proj_obli_complex_pdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pdf_functions.true_obli_complex_pdf"><code class="docutils literal notranslate"><span class="pre">true_obli_complex_pdf()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="obliquity.html">Obliquity function</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">exoSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="documentation.html">Documentation</a></li>
+      <li class="breadcrumb-item active">PDF Functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pdf_functions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pdf-functions">
+<span id="id1"></span><h1>PDF Functions<a class="headerlink" href="#pdf-functions" title="Link to this heading"></a></h1>
+<section id="module-pdf_functions">
+<span id="pdf-fuctions-for-exospin"></span><h2>PDF fuctions for exoSpin :<a class="headerlink" href="#module-pdf_functions" title="Link to this heading"></a></h2>
+<p>ExoSpin - PDF important functions</p>
+<p>&#64;authors : I. Abdoulwahab &amp; P. Palma-Bifani &amp; G. Chauvin &amp; A. Simonnin</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pdf_functions.ip_complex_pdf">
+<span class="sig-prename descclassname"><span class="pre">pdf_functions.</span></span><span class="sig-name descname"><span class="pre">ip_complex_pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_kde</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vsini_kde</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdf_functions.html#ip_complex_pdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdf_functions.ip_complex_pdf" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the companion spin axis PDF by using M. Bryan et al. 2020 method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v_kde</strong> (<em>scipy.stats.gaussian_kde</em>) – A 1D KDE of companion velocity.</p></li>
+<li><p><strong>vsini_kde</strong> (<em>scipy.stats.gaussian_kde</em>) – A 1D KDE of companion rotational velocity.</p></li>
+<li><p><strong>v_range</strong> (<em>numpy.ndarray</em>) – 1D array representing the domain where the velocities will be evaluated.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of evaluated points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>1D array representing the PDF of companion spin axis.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(numpy.ndarray)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – The number of evaluted points must be greater than 1 and v_range must be a 1D array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pdf_functions.kde">
+<span class="sig-prename descclassname"><span class="pre">pdf_functions.</span></span><span class="sig-name descname"><span class="pre">kde</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdf_functions.html#kde"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdf_functions.kde" title="Link to this definition"></a></dt>
+<dd><p>From your data, the function returns a 1D Kernel Density Estimation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray</em>) – A 1D array that contains the data that will be estimated.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D Kernel Density Estimation object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(scipy.stats.gaussian_kde)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If data are not a 1D array of if data is empty.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pdf_functions.pdf">
+<span class="sig-prename descclassname"><span class="pre">pdf_functions.</span></span><span class="sig-name descname"><span class="pre">pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kde</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdf_functions.html#pdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdf_functions.pdf" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the Kernel Density Estimation (KDE) over a specified interval and return a normalized PDF.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kde</strong> (<em>scipy.stats.gaussian_kde</em>) – A 1D Kernel Density Estimation object.</p></li>
+<li><p><strong>domain</strong> (<em>numpy.ndarray</em>) – 1D array representing the domain where the KDE will be evaluated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>1D array of KDE values evaluated at each point in the interval and normalized.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(numpy.ndarray)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If interval is not a 1D array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pdf_functions.proj_obli_complex_pdf">
+<span class="sig-prename descclassname"><span class="pre">pdf_functions.</span></span><span class="sig-name descname"><span class="pre">proj_obli_complex_pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">io_kde</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ip_pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdf_functions.html#proj_obli_complex_pdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdf_functions.proj_obli_complex_pdf" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the companion projected obliquity PDF.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>io_kde</strong> (<em>scipy.stats.gaussian_kde</em>) – A 1D KDE of orbital inclination.</p></li>
+<li><p><strong>ip_pdf</strong> (<em>numpy.ndarray</em>) – 1D array of KDE evaluated values of the companion spin axis</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of evaluated points</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>1D array representing the PDF of companion spin axis.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(numpy.ndarray)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – The number of evaluted points must be greater than 1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pdf_functions.true_obli_complex_pdf">
+<span class="sig-prename descclassname"><span class="pre">pdf_functions.</span></span><span class="sig-name descname"><span class="pre">true_obli_complex_pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">io_pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ip_pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdf_functions.html#true_obli_complex_pdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdf_functions.true_obli_complex_pdf" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the companion true obliquity PDF.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>io_pdf</strong> (<em>numpy.ndarray</em>) – 1D array of KDE evaluated values of the orbital inclination.</p></li>
+<li><p><strong>ip_pdf</strong> (<em>numpy.ndarray</em>) – 1D array of KDE evaluated values of the companion spin axis.</p></li>
+<li><p><strong>omega_o_pdf</strong> (<em>numpy.ndarray</em>) – 1D array of KDE evaluated values of the star inclination.</p></li>
+<li><p><strong>nb</strong> (<em>int</em>) – Number of evaluated points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>1D array representing the PDF of companion true obliquity.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(numpy.ndarray)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – The number of evaluted points must be greater than 1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plotclass.html" class="btn btn-neutral float-left" title="Plotting Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="obliquity.html" class="btn btn-neutral float-right" title="Obliquity function" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Idriss Abdoulwahab &amp; Paulina Palma-Bifani.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
