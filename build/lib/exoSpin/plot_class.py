@@ -3,7 +3,6 @@ ExoSpin - Plot Class
 
 
 @authors : I. Abdoulwahab & P. Palma-Bifani & G. Chauvin & A. Simonnin
-
 '''
 
 
@@ -20,40 +19,30 @@ import pickle
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Plot ():
-
-    def __init__(self , type_ , x , y , xlabel , ylabel , color , title):
-        """
+    """
         Initialize every parameters for the Plot class object.
 
         Args:
-            type_ (String) : a String representing the type of plot.
-                            {
-                                'Histogram'
-                                'PDF'
-                            }
+            type_ (str) : a string representing the type of plot.
             x (numpy.ndarray) : 1D array representing x-values of the plot.
             y (numpy.ndarray) : 1D array representing y-values of the plot.
-            xlabel (String) : a String representing the label of the x-axis.
-            ylabel (String) : a String representing the label of the y-axis.
-            color (String) : a String representing the color of the plot.
-            title (String) : a String representing the titlte of the plot.
+            xlabel (str) : a string representing the label of the x-axis.
+            ylabel (str) : a string representing the label of the y-axis.
+            color (str) : a string representing the color of the plot.
+            title (str) : a string representing the titlte of the plot.
 
         Attributes:
-            type_ (String) : a String representing the type of plot.
-                            {
-                                'Histogram'
-                                'PDF'
-                            }
+            type_ (str) : a string representing the type of plot. Possible values : {'Histogram','PDF'}
             x (numpy.ndarray) : 1D array representing x-values of the plot.
             y (numpy.ndarray) : 1D array representing y-values of the plot.
-            xlabel (String) : a String representing the label of the x-axis.
-            ylabel (String) : a String representing the label of the y-axis.
-            color (String) : a String representing the color of the plot.
-            title (String) : a String representing the titlte of the plot.
+            xlabel (str) : a string representing the label of the x-axis.
+            ylabel (str) : a string representing the label of the y-axis.
+            color (str) : a string representing the color of the plot.
+            title (str) : a string representing the titlte of the plot.
             bins (int) : a integer that sets the histogram bins.
+    """
 
-        """
-
+    def __init__(self , type_ , x , y , xlabel , ylabel , color , title):
         self.type = type_
         self.x = x
         self.y = y
@@ -68,7 +57,7 @@ class Plot ():
         Set a new color for the plot.
 
         Args:
-            new_color (String): a String that represents the new color for the plot.
+            new_color (str): a string that represents the new color for the plot.
 
         Raises:
             ValueError: If input and self attribute don't have the same type.
@@ -83,7 +72,7 @@ class Plot ():
         Set a new title for the plot.
 
         Args:
-            new_color (String): a String that represents the new title for the plot.
+            new_color (str): a string that represents the new title for the plot.
             
         Raises:
             ValueError: If input and self attribute don't have the same type.
@@ -133,7 +122,7 @@ class Plot ():
         Set a new x-axis label for the plot.
 
         Args:
-            label (String): a String that represents the new label for the plot.
+            label (str): a string that represents the new label for the plot.
             
         Raises:
             ValueError: If input and self attribute don't have the same type.
@@ -149,7 +138,7 @@ class Plot ():
         Set a new y-axis label for the plot.
 
         Args:
-            label (String): a String that represents the new label for the plot.
+            label (str): a string that represents the new label for the plot.
             
         Raises:
             ValueError: If input and self attribute don't have the same type.

@@ -19,8 +19,8 @@ from scipy.signal import savgol_filter
 from scipy.stats import gaussian_kde
 from scipy.stats import uniform
 
-from .pdf_functions import *
-from .plot_class import Plot
+from pdf_functions import *
+from plot_class import Plot
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -389,7 +389,6 @@ class Exoplanet():
                 xlabel = 'Degree (°)'
                 ylabel = 'PDF'
                 plot = Plot('PDF' , angles , ip_pdf , xlabel , ylabel , color_graph , title)
-                plt.plot(angles,ip_pdf,color='lightblue',alpha=0.7)
                 self.ip_pdf_saved = plot
                 return plot
             else:

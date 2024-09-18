@@ -12,17 +12,29 @@ The function obliquity() does the run script.
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 ## Imports
 
-from exoSpin.exoplanet_class import *
-from exoSpin.pdf_functions import *
-from exoSpin.plot_class import *
+import numpy as np
+from .exoplanet_class import *
 
 
-def obliquity(exoplanet_name, io_path, radius_path, vsini_path, omega_o_path, P, M):
+def obliquity(exoplanet_name, io, radius, vsini, omega_o, P, M):
     """
-    Compute the obliquity from exoplanet parameters and plot the obliquity.
+    From exoplanet data, the function computes the obliquity of the planet and returns an Exoplanet obkect.
+
+    Args:
+        exoplanet_name (str): Planet's name.
+        io (str or list): Path for the orbital inclination data file.
+                                    It can be a path or a list where the first element is the mean value, the second the standard deviation, and the third the length of it. From it, a random distribution will be generated.
+        radius (str or list): Path for the radius data file.
+                                    It can be a path or a list where the first element is the mean value, the second the standard deviation, and the third the length of it. From it, a random distribution will be generated.
+        vsini (str or list): Path for the rotational velocity data file.
+                                    It can be a path or a list where the first element is the mean value, the second the standard deviation, and the third the length of it. From it, a random distribution will be generated.
+        omega_o (str or list): Path for the sky projected inclination data file.
+                                    It can be a path or a list where the first element is the mean value, the second the standard deviation, and the third the length of it. From it, a random distribution will be generated.
+        P (float): Rotational period of the planet.
+        M (float): Mass of the planet.
 
     Returns:
-        (Exoplanet): an Exoplanet class object.
+        (Exoplanet): An Exoplanet object.
 
     """
     # ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -33,17 +45,32 @@ def obliquity(exoplanet_name, io_path, radius_path, vsini_path, omega_o_path, P,
     print('-> ExoSpin Configuration')
     print()
 
-    io_file = open(io_path, "r")
-    io_samp = np.loadtxt(io_file, skiprows=1)
+    if isinstance(io,list):
+        io_samp = np.random.normal(loc=io[0], scale=io[1], size=io[2])
 
-    radius_file = open(radius_path, "r")
-    radius_samp = np.loadtxt(radius_file, skiprows=1,usecols=(1,))
+    else:
+        io_file = open(io, "r")
+        io_samp = np.loadtxt(io_file, skiprows=1)
 
-    vsini_file = open(vsini_path, "r")
-    vsini_samp = np.loadtxt(vsini_file, skiprows=1,usecols=(2,))
+    if isinstance(radius,list):
+        radius_samp = np.random.normal(loc=radius[0], scale=radius[1], size=radius[2])
+    else:
+        radius_file = open(radius, "r")
+        radius_samp = np.loadtxt(radius_file, skiprows=1,usecols=(1,))
 
-    omega_o_file = open(omega_o_path, "r")
-    omega_o_samp = np.loadtxt(omega_o_file, skiprows=1)
+    if isinstance(vsini,list):
+        vsini_samp = np.random.normal(loc=vsini[0], scale=vsini[1], size=vsini[2])
+
+    else:
+        vsini_file = open(vsini, "r")
+        vsini_samp = np.loadtxt(vsini_file, skiprows=1,usecols=(2,))
+
+    if isinstance(omega_o,list):
+        omega_o_samp = np.random.normal(loc=omega_o[0], scale=omega_o[1], size=omega_o[2])
+
+    else:
+        omega_o_file = open(omega_o, "r")
+        omega_o_samp = np.loadtxt(omega_o_file, skiprows=1)
 
     exoplanet = Exoplanet(exoplanet_name, io_samp, radius_samp, vsini_samp, omega_o_samp, P, M) 
 

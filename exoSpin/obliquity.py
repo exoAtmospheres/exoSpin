@@ -13,7 +13,7 @@ The function obliquity() does the run script.
 ## Imports
 
 import numpy as np
-from .exoplanet_class import *
+from exoplanet_class import *
 
 
 def obliquity(exoplanet_name, io, radius, vsini, omega_o, P, M):
